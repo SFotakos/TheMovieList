@@ -1,4 +1,4 @@
-package com.sfotakos.popularmovies.MovieList;
+package com.sfotakos.themovielist.MovieList;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -20,14 +20,14 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.sfotakos.popularmovies.DetailActivity;
-import com.sfotakos.popularmovies.MovieList.Adapter.MarginItemDecoration;
-import com.sfotakos.popularmovies.MovieList.Adapter.MovieListAdapter;
-import com.sfotakos.popularmovies.MovieList.Model.DiscoverMovieRequest;
-import com.sfotakos.popularmovies.MovieList.Model.DiscoverMovieResponse;
-import com.sfotakos.popularmovies.MovieList.Model.Movie;
-import com.sfotakos.popularmovies.NetworkUtils;
-import com.sfotakos.popularmovies.R;
+import com.sfotakos.themovielist.DetailActivity;
+import com.sfotakos.themovielist.MovieList.Adapter.MarginItemDecoration;
+import com.sfotakos.themovielist.MovieList.Adapter.MovieListAdapter;
+import com.sfotakos.themovielist.MovieList.Model.DiscoverMovieRequest;
+import com.sfotakos.themovielist.MovieList.Model.DiscoverMovieResponse;
+import com.sfotakos.themovielist.MovieList.Model.Movie;
+import com.sfotakos.themovielist.NetworkUtils;
+import com.sfotakos.themovielist.R;
 
 import java.io.IOException;
 import java.net.URL;

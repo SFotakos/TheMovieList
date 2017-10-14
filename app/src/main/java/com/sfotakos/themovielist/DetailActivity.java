@@ -1,4 +1,4 @@
-package com.sfotakos.popularmovies;
+package com.sfotakos.themovielist;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBar;
@@ -9,8 +9,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.sfotakos.popularmovies.MovieList.MainActivity;
-import com.sfotakos.popularmovies.MovieList.Model.Movie;
+import com.sfotakos.themovielist.MovieList.MainActivity;
+import com.sfotakos.themovielist.MovieList.Model.Movie;
 import com.squareup.picasso.Picasso;
 
 

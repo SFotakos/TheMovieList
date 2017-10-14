@@ -1,8 +1,8 @@
-package com.sfotakos.popularmovies.MovieList.Model;
+package com.sfotakos.themovielist.MovieList.Model;
 
 import android.net.Uri;
 
-import com.sfotakos.popularmovies.NetworkUtils;
+import com.sfotakos.themovielist.NetworkUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;

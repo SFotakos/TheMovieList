@@ -1,4 +1,4 @@
-package com.sfotakos.popularmovies;
+package com.sfotakos.themovielist;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

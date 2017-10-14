@@ -1,4 +1,4 @@
-package com.sfotakos.popularmovies.MovieList.Adapter;
+package com.sfotakos.themovielist.MovieList.Adapter;
 
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;

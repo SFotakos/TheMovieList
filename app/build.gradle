@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     buildToolsVersion "26.0.1"
     defaultConfig {
-        applicationId "com.sfotakos.popularmovies"
+        applicationId "com.sfotakos.themovielist"
         minSdkVersion 15
         targetSdkVersion 26
         versionCode 1

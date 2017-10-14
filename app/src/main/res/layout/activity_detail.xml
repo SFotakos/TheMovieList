@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="12dp"
-    tools:context="com.sfotakos.popularmovies.DetailActivity">
+    tools:context="com.sfotakos.themovielist.DetailActivity">
 
     <ImageView
         android:contentDescription="@string/accessibility_movie_poster"

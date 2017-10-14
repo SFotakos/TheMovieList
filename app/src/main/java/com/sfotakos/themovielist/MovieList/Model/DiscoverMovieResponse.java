@@ -1,4 +1,4 @@
-package com.sfotakos.popularmovies.MovieList.Model;
+package com.sfotakos.themovielist.MovieList.Model;
 
 import org.json.JSONArray;
 import org.json.JSONException;

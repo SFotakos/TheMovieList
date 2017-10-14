@@ -1,4 +1,4 @@
-package com.sfotakos.popularmovies;
+package com.sfotakos.themovielist;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
