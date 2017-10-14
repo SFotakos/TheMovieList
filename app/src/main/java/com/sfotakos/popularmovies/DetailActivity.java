@@ -15,7 +15,9 @@ import com.squareup.picasso.Picasso;
 
 
 //TODO [1] Long titles should go to a new line, implement Toolbar.
+@SuppressWarnings("FieldCanBeLocal")
 public class DetailActivity extends AppCompatActivity {
+
 
     private Movie mMovie;
 
@@ -52,6 +54,7 @@ public class DetailActivity extends AppCompatActivity {
                 }
 
                 if (actionBar != null){
+                    //TODO [QUESTION]: The project lesson states an original title, some titles were in japanese, was that the intended use?
                     actionBar.setTitle(mMovie.getTitle());
                     actionBar.setSubtitle(formattedReleaseDate);
                 }
@@ -64,8 +67,7 @@ public class DetailActivity extends AppCompatActivity {
                 Double voteAvg = mMovie.getVoteAverage()*10;
                 mMovieAvgScoreProgress.setProgress(voteAvg.intValue());
 
-                String avgScore = getResources().getString(R.string.rating) +
-                        ": " + String.valueOf(voteAvg.intValue()) + "%";
+                String avgScore = String.valueOf(voteAvg.intValue()) + " / 100";
                 mMovieAvgScoreValue.setText(avgScore);
 
                 mMovieSynopsis.setText(String.valueOf(mMovie.getOverview()));

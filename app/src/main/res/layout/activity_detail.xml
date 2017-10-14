@@ -8,6 +8,7 @@
     tools:context="com.sfotakos.popularmovies.DetailActivity">
 
     <ImageView
+        android:contentDescription="@string/accessibility_movie_poster"
         android:id="@+id/iv_movie_poster"
         android:layout_width="wrap_content"
         android:layout_height="280dp"

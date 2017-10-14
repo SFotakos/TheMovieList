@@ -1,5 +1,6 @@
 package com.sfotakos.popularmovies.MovieList.Model;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  * Created by spyridion on 12/10/17.
  */
-
+@SuppressLint("WeakerAccess")
 public class Movie implements Parcelable {
 
     private static final String BASE_POSTER_URL = "https://image.tmdb.org/t/p";

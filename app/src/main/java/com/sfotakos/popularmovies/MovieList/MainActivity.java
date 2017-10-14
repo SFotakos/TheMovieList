@@ -21,6 +21,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.sfotakos.popularmovies.DetailActivity;
+import com.sfotakos.popularmovies.MovieList.Adapter.MarginItemDecoration;
+import com.sfotakos.popularmovies.MovieList.Adapter.MovieListAdapter;
 import com.sfotakos.popularmovies.MovieList.Model.DiscoverMovieRequest;
 import com.sfotakos.popularmovies.MovieList.Model.DiscoverMovieResponse;
 import com.sfotakos.popularmovies.MovieList.Model.Movie;
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
         mMoviesList.setLayoutManager(layoutManager);
 
-        // Fixing double margins
+        // Margins for item decorator
         int marginInPixels = getResources().getDimensionPixelSize(R.dimen.movie_item_margin);
         mMoviesList.addItemDecoration(new MarginItemDecoration(marginInPixels, GRID_COLUMNS));
 
@@ -121,11 +123,11 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
             case R.id.action_sort:
                 //Switch between popularity and rating sorting type and update text accordingly.
                 if (mSortType.equals(mSortDescPopularity)) {
-                    item.setTitle(getResources().getString(R.string.action_sortByPopularity));
                     mSortType = mSortDescRating;
-                } else if (mSortType.equals(mSortDescRating)) {
                     item.setTitle(getResources().getString(R.string.action_sortByRating));
+                } else if (mSortType.equals(mSortDescRating)) {
                     mSortType = mSortDescPopularity;
+                    item.setTitle(getResources().getString(R.string.action_sortByPopularity));
                 }
 
                 mAdapter.setMovieList(null);
@@ -173,9 +175,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
             try {
                 String jsonResponse = NetworkUtils.getResponseFromHttpUrl(discoveryRequestURL);
-
                 return new DiscoverMovieResponse(jsonResponse);
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -194,6 +194,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         }
     }
 
+    // Deal with connectivity changes
     private class ConnectivityReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {

@@ -1,4 +1,4 @@
-package com.sfotakos.popularmovies.MovieList;
+package com.sfotakos.popularmovies.MovieList.Adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -26,7 +26,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
         void onClick(Movie movie);
     }
 
-    private MovieItemClickListener mClickHandler;
+    private final MovieItemClickListener mClickHandler;
 
     public MovieListAdapter(MovieItemClickListener mClickHandler) {
         this.mClickHandler = mClickHandler;
@@ -60,7 +60,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
     }
 
     class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private ImageView mMoviePoster;
+        private final ImageView mMoviePoster;
 
         MovieViewHolder(View itemView) {
             super(itemView);

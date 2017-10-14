@@ -11,19 +11,20 @@ import java.net.URL;
  * Created by spyridion on 12/10/17.
  */
 
+
 public class DiscoverMovieRequest {
 
-    public static final String FUNCTIONALITY_PARAM = "discover";
-    public static final String TYPE_PARAM = "movie";
-    static final String SORT_BY_PARAM = "sort_by";
-    static final String INCLUDE_ADULT_PARAM = "include_adult";
-    static final String INCLUDE_VIDEO_PARAM = "include_video";
-    static final String VOTE_COUNT_GTE_PARAM = "vote_count.gte";
-    static final String PAGE_PARAM = "page";
+    private static final String FUNCTIONALITY_PARAM = "discover";
+    private static final String TYPE_PARAM = "movie";
+    private static final String SORT_BY_PARAM = "sort_by";
+    private static final String INCLUDE_ADULT_PARAM = "include_adult";
+    private static final String INCLUDE_VIDEO_PARAM = "include_video";
+    private static final String VOTE_COUNT_GTE_PARAM = "vote_count.gte";
+    private static final String PAGE_PARAM = "page";
 
     //There were some really bad results showing without vote count,
     //pornography labeled as not adult, movies with 10 average score, this mitigates that.
-    static final String VOTE_COUNT_GTE = "300";
+    private static final String VOTE_COUNT_GTE = "300";
 
     //TODO [X] Add more parameters
     public enum SortTypes {
@@ -35,7 +36,7 @@ public class DiscoverMovieRequest {
         VOTE_AVERAGE("vote_average"),
         VOTE_COUNT("vote_count");
 
-        private String apiSortType;
+        private final String apiSortType;
 
         SortTypes(String apiSortType) {
             this.apiSortType = apiSortType;
@@ -50,7 +51,7 @@ public class DiscoverMovieRequest {
         ASCENDING("asc"),
         DESCENDING("desc");
 
-        private String apiSortOrder;
+        private final String apiSortOrder;
 
         Order(String apiSortOrder) {
             this.apiSortOrder = apiSortOrder;
@@ -62,7 +63,7 @@ public class DiscoverMovieRequest {
     }
 
     private String sortBy;
-    private int page;
+    private final int page;
 
     public DiscoverMovieRequest(String sortBy, int page) {
         this.sortBy = sortBy;

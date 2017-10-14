@@ -1,4 +1,4 @@
-package com.sfotakos.popularmovies.MovieList;
+package com.sfotakos.popularmovies.MovieList.Adapter;
 
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +12,7 @@ import android.view.View;
 
 public class MarginItemDecoration extends RecyclerView.ItemDecoration {
 
-    private int mSpace;
+    private final int mSpace;
     private int mColumns = 1;
 
     public MarginItemDecoration(int space, int columns) {
@@ -30,10 +30,6 @@ public class MarginItemDecoration extends RecyclerView.ItemDecoration {
                                RecyclerView parent, RecyclerView.State state) {
         outRect.right = mSpace;
         outRect.bottom = mSpace;
-
-//        // Add top margin for each column in grid layouts.
-//        int itemAmount = parent.getAdapter().getItemCount();
-//        int elementsPerColumn = mColumns != 0 ? itemAmount/mColumns : itemAmount;
 
         // Add top margin only for the first item of each column to avoid double space between items
         if (parent.getChildLayoutPosition(view) < mColumns) {

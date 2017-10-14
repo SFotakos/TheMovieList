@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">TheMovieList</string>
 
-    <string name="action_sortByPopularity">Sort by \npopularity</string>
-    <string name="action_sortByRating">Sort by \nrating</string>
+    <string name="action_sortByPopularity">Sorting by\npopularity</string>
+    <string name="action_sortByRating">Sorting\nby rating</string>
     <string name="action_about">About</string>
 
     <string name="error_default">Something went wrong</string>
@@ -14,7 +14,7 @@
         Application logo by Paomedia on iconshow.me licensed under Creative Commons 3.0\n\n
     </string>
 
-    <string name="rating">Rating</string>
+    <string name="accessibility_movie_poster">Movie poster</string>
 
     <!--https://we.tl/ocymkEOWmC-->
 
