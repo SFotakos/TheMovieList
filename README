@@ -1,0 +1,2 @@
+Remember to add your TMDb API Key to the variable TMDB_API_KEY 
+under the NetworkUtils class
