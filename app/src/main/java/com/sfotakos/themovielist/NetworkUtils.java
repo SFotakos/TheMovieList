@@ -17,7 +17,7 @@ import java.util.Scanner;
 public class NetworkUtils {
     
     public static final String TMDB_API_KEY_PARAM = "api_key";
-    public static final String TMDB_API_KEY = "YOUR_API_KEY";
+    public static final String TMDB_API_KEY = BuildConfig.TMDB_API_KEY;
 
     public static final String BASE_TMDB_URL = "https://api.themoviedb.org/";
     public static final String TMDB_API_VERSION = "3";

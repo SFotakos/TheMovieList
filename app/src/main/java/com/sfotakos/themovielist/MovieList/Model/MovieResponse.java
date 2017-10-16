@@ -11,14 +11,14 @@ import java.util.List;
  * Created by spyridion on 12/10/17.
  */
 
-public class DiscoverMovieResponse {
+public class MovieResponse {
     private Integer page;
     private Integer totalResults;
     private Integer totalPages;
 
     private List<Movie> movieList = new ArrayList<>();
 
-    public DiscoverMovieResponse(String discoverMovieJsonResponse) {
+    public MovieResponse(String discoverMovieJsonResponse) {
         try {
             getMovieResponseFromJson(discoverMovieJsonResponse);
         } catch (JSONException e) {

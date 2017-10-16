@@ -26,6 +26,8 @@ public class DetailActivity extends AppCompatActivity {
     private TextView mMovieSynopsis;
     private ImageView mMoviePoster;
 
+    //TODO Add layout for landscape orientation
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

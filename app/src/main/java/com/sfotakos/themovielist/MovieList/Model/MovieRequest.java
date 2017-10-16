@@ -12,19 +12,30 @@ import java.net.URL;
  */
 
 
-public class DiscoverMovieRequest {
+public class MovieRequest {
 
-    private static final String FUNCTIONALITY_PARAM = "discover";
+    private static final String DISCOVER_FUNCTIONALITY_PARAM = "discover";
+    private static final String POPULAR_FUNCTIONALITY_PARAM = "popular";
+    private static final String TOPRATED_FUNCTIONALITY_PARAM = "top_rated";
     private static final String TYPE_PARAM = "movie";
+
+    // Discover params
     private static final String SORT_BY_PARAM = "sort_by";
     private static final String INCLUDE_ADULT_PARAM = "include_adult";
     private static final String INCLUDE_VIDEO_PARAM = "include_video";
     private static final String VOTE_COUNT_GTE_PARAM = "vote_count.gte";
+
+    // General params
+    private static final String LANGUAGE_PARAM = "language";
     private static final String PAGE_PARAM = "page";
+    private static final String REGION_PARAM = "region";
 
     //There were some really bad results showing without vote count,
     //pornography labeled as not adult, movies with 10 average score, this mitigates that.
     private static final String VOTE_COUNT_GTE = "300";
+
+    // Temporarily fixed language
+    private static final String LANGUAGE = "en-US";
 
     //TODO [X] Add more parameters
     public enum SortTypes {
@@ -42,7 +53,7 @@ public class DiscoverMovieRequest {
             this.apiSortType = apiSortType;
         }
 
-        public String getApiSortType(){
+        public String getApiSortType() {
             return apiSortType;
         }
     }
@@ -57,7 +68,7 @@ public class DiscoverMovieRequest {
             this.apiSortOrder = apiSortOrder;
         }
 
-        public String getApiSortOrder(){
+        public String getApiSortOrder() {
             return apiSortOrder;
         }
     }
@@ -65,8 +76,11 @@ public class DiscoverMovieRequest {
     private String sortBy;
     private final int page;
 
-    public DiscoverMovieRequest(String sortBy, int page) {
+    public MovieRequest(String sortBy, int page) {
         this.sortBy = sortBy;
+        this.page = page;
+    }
+    public MovieRequest(int page) {
         this.page = page;
     }
 
@@ -82,16 +96,60 @@ public class DiscoverMovieRequest {
         return sortTypes.getApiSortType() + "." + order.getApiSortOrder();
     }
 
-    public URL buildMovieDiscoveryRequestURL() {
+    public URL buildDiscoverMovieRequestURL() {
+        if (sortBy == null ) {
+            sortBy = getSortBy(MovieRequest.SortTypes.POPULARITY, MovieRequest.Order.DESCENDING);
+        }
+
         Uri builtUri = Uri.parse(NetworkUtils.BASE_TMDB_URL).buildUpon()
                 .appendPath(NetworkUtils.TMDB_API_VERSION)
-                .appendPath(FUNCTIONALITY_PARAM)
+                .appendPath(DISCOVER_FUNCTIONALITY_PARAM)
                 .appendPath(TYPE_PARAM)
                 .appendQueryParameter(NetworkUtils.TMDB_API_KEY_PARAM, NetworkUtils.TMDB_API_KEY)
                 .appendQueryParameter(SORT_BY_PARAM, sortBy)
                 .appendQueryParameter(INCLUDE_ADULT_PARAM, "false")
                 .appendQueryParameter(INCLUDE_VIDEO_PARAM, "false")
                 .appendQueryParameter(VOTE_COUNT_GTE_PARAM, VOTE_COUNT_GTE)
+                .appendQueryParameter(PAGE_PARAM, String.valueOf(page))
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
+
+    public URL buildPopularMovieRequestURL() {
+        Uri builtUri = Uri.parse(NetworkUtils.BASE_TMDB_URL).buildUpon()
+                .appendPath(NetworkUtils.TMDB_API_VERSION)
+                .appendPath(TYPE_PARAM)
+                .appendPath(POPULAR_FUNCTIONALITY_PARAM)
+                .appendQueryParameter(NetworkUtils.TMDB_API_KEY_PARAM, NetworkUtils.TMDB_API_KEY)
+                .appendQueryParameter(LANGUAGE_PARAM, LANGUAGE)
+                .appendQueryParameter(PAGE_PARAM, String.valueOf(page))
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
+
+    public URL buildTopRatedMovieRequestURL() {
+        Uri builtUri = Uri.parse(NetworkUtils.BASE_TMDB_URL).buildUpon()
+                .appendPath(NetworkUtils.TMDB_API_VERSION)
+                .appendPath(TYPE_PARAM)
+                .appendPath(TOPRATED_FUNCTIONALITY_PARAM)
+                .appendQueryParameter(NetworkUtils.TMDB_API_KEY_PARAM, NetworkUtils.TMDB_API_KEY)
+                .appendQueryParameter(LANGUAGE_PARAM, LANGUAGE)
                 .appendQueryParameter(PAGE_PARAM, String.valueOf(page))
                 .build();
 

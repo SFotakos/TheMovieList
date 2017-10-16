@@ -23,8 +23,8 @@ import android.widget.TextView;
 import com.sfotakos.themovielist.DetailActivity;
 import com.sfotakos.themovielist.MovieList.Adapter.MarginItemDecoration;
 import com.sfotakos.themovielist.MovieList.Adapter.MovieListAdapter;
-import com.sfotakos.themovielist.MovieList.Model.DiscoverMovieRequest;
-import com.sfotakos.themovielist.MovieList.Model.DiscoverMovieResponse;
+import com.sfotakos.themovielist.MovieList.Model.MovieRequest;
+import com.sfotakos.themovielist.MovieList.Model.MovieResponse;
 import com.sfotakos.themovielist.MovieList.Model.Movie;
 import com.sfotakos.themovielist.NetworkUtils;
 import com.sfotakos.themovielist.R;
@@ -32,6 +32,7 @@ import com.sfotakos.themovielist.R;
 import java.io.IOException;
 import java.net.URL;
 
+//TODO implement on restore state to keep the list as it was.
 public class MainActivity extends AppCompatActivity implements MovieListAdapter.MovieItemClickListener {
 
     public static final String MOVIE_DATA = "MovieData";
@@ -45,15 +46,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
     private ProgressBar mLoadingIndicator;
     private TextView mErrorMessage;
 
-    private static final String mSortDescPopularity = DiscoverMovieRequest.getSortBy(
-            DiscoverMovieRequest.SortTypes.POPULARITY,
-            DiscoverMovieRequest.Order.DESCENDING);
-
-    private static final String mSortDescRating = DiscoverMovieRequest.getSortBy(
-            DiscoverMovieRequest.SortTypes.VOTE_AVERAGE,
-            DiscoverMovieRequest.Order.DESCENDING);
-
-    private String mSortType = mSortDescPopularity;
+    private boolean isSortingByPopularity = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,8 +94,8 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
     private void fetchMovies() {
         if (NetworkUtils.hasConnection(this)) {
-            DiscoverMovieRequest discoverMovieRequest = new DiscoverMovieRequest(mSortType, DEFAULT_PAGE);
-            new FetchMovies().execute(discoverMovieRequest);
+            MovieRequest movieRequest = new MovieRequest(DEFAULT_PAGE);
+            new FetchMovies().execute(movieRequest);
         } else {
             showErrorMessage(getResources().getString(R.string.error_no_connectivity));
         }
@@ -122,12 +115,12 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         switch (id) {
             case R.id.action_sort:
                 //Switch between popularity and rating sorting type and update text accordingly.
-                if (mSortType.equals(mSortDescPopularity)) {
-                    mSortType = mSortDescRating;
+                if (isSortingByPopularity) {
                     item.setTitle(getResources().getString(R.string.action_sortByRating));
-                } else if (mSortType.equals(mSortDescRating)) {
-                    mSortType = mSortDescPopularity;
+                    isSortingByPopularity = false;
+                } else {
                     item.setTitle(getResources().getString(R.string.action_sortByPopularity));
+                    isSortingByPopularity = true;
                 }
 
                 mAdapter.setMovieList(null);
@@ -158,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         startActivity(detailActivityIntent);
     }
 
-    private class FetchMovies extends AsyncTask<DiscoverMovieRequest, Void, DiscoverMovieResponse> {
+    private class FetchMovies extends AsyncTask<MovieRequest, Void, MovieResponse> {
 
         @Override
         protected void onPreExecute() {
@@ -168,14 +161,19 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         }
 
         @Override
-        protected DiscoverMovieResponse doInBackground(DiscoverMovieRequest... discoverMovieRequests) {
+        protected MovieResponse doInBackground(MovieRequest... movieRequests) {
 
-            DiscoverMovieRequest discoverMovieRequest = discoverMovieRequests[0];
-            URL discoveryRequestURL = discoverMovieRequest.buildMovieDiscoveryRequestURL();
+            MovieRequest movieRequest = movieRequests[0];
+            URL requestURL;
+            if (isSortingByPopularity) {
+                requestURL = movieRequest.buildPopularMovieRequestURL();
+            } else {
+                requestURL = movieRequest.buildTopRatedMovieRequestURL();
+            }
 
             try {
-                String jsonResponse = NetworkUtils.getResponseFromHttpUrl(discoveryRequestURL);
-                return new DiscoverMovieResponse(jsonResponse);
+                String jsonResponse = NetworkUtils.getResponseFromHttpUrl(requestURL);
+                return new MovieResponse(jsonResponse);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -183,11 +181,11 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         }
 
         @Override
-        protected void onPostExecute(DiscoverMovieResponse discoverMovieResponse) {
+        protected void onPostExecute(MovieResponse movieResponse) {
             mLoadingIndicator.setVisibility(View.INVISIBLE);
-            if (discoverMovieResponse != null) {
+            if (movieResponse != null) {
                 showMovieList();
-                mAdapter.setMovieList(discoverMovieResponse.getMovieList());
+                mAdapter.setMovieList(movieResponse.getMovieList());
             } else {
                 showErrorMessage(getResources().getString(R.string.error_default));
             }
