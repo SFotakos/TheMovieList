@@ -16,6 +16,8 @@
 
     <string name="accessibility_movie_poster">Movie poster</string>
 
-    <!--https://we.tl/ocymkEOWmC-->
+    <string name="trailers">Trailers</string>
+    <string name="reviews">Reviews</string>
+    <string name="action_add_favorite">Add to favorite</string>
 
 </resources>

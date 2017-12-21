@@ -8,6 +8,8 @@
         android:layout_height="match_parent"
         android:layout_margin="12dp"
         android:fadeScrollbars="false"
+        android:scrollbarStyle="outsideInset"
+        android:fillViewport="true"
         android:scrollbars="vertical"
         tools:context="com.sfotakos.themovielist.DetailActivity">
 
@@ -18,7 +20,7 @@
             <ImageView
                 android:id="@+id/iv_movie_poster"
                 android:layout_width="wrap_content"
-                android:layout_height="280dp"
+                android:layout_height="240dp"
                 android:adjustViewBounds="true"
                 android:background="@drawable/movie_frame"
                 android:contentDescription="@string/accessibility_movie_poster"
@@ -26,50 +28,92 @@
                 android:padding="4dp"
                 android:scaleType="fitCenter"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <FrameLayout
-                android:id="@+id/fl_average_score"
+            <View
+                android:id="@+id/trailer_divider"
+                android:layout_width="2dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="56dp"
+                android:layout_marginBottom="56dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:background="@color/colorAccent"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_movie_poster"
+                app:layout_constraintLeft_toRightOf="@+id/iv_movie_poster"
+                app:layout_constraintTop_toTopOf="@+id/iv_movie_poster"/>
+
+            <include
+                android:id="@+id/trailers"
+                layout="@layout/trailers"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@+id/pb_movie_average_score"
+                app:layout_constraintLeft_toRightOf="@+id/trailer_divider"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/iv_movie_poster" />
+
+            <ProgressBar
+                android:id="@+id/pb_movie_average_score"
+                style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="0dp"
                 android:layout_height="36dp"
-                android:paddingBottom="4dp"
-                android:paddingTop="4dp"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:max="100"
+                android:progress="0"
+                android:progressDrawable="@drawable/horizontal_average_score"
                 app:layout_constraintLeft_toLeftOf="@+id/iv_movie_poster"
                 app:layout_constraintRight_toRightOf="@id/iv_movie_poster"
-                app:layout_constraintTop_toBottomOf="@+id/iv_movie_poster">
+                app:layout_constraintTop_toBottomOf="@+id/iv_movie_poster" />
 
-                <ProgressBar
-                    android:id="@+id/pb_movie_average_score"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:max="100"
-                    android:progress="0"
-                    android:progressDrawable="@drawable/horizontal_average_score" />
-
-                <TextView
-                    android:id="@+id/tv_movie_average_score"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:textColor="@android:color/white"
-                    android:textSize="18sp" />
-
-            </FrameLayout>
+            <TextView
+                android:id="@+id/tv_movie_average_score"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                android:textSize="18dp"
+                app:layout_constraintBottom_toBottomOf="@+id/pb_movie_average_score"
+                app:layout_constraintLeft_toLeftOf="@+id/pb_movie_average_score"
+                app:layout_constraintRight_toRightOf="@id/pb_movie_average_score"
+                app:layout_constraintTop_toTopOf="@+id/pb_movie_average_score"
+                tools:ignore="SpUsage" />
 
             <TextView
                 android:id="@+id/tv_movie_synopsis"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_marginTop="8dp"
                 android:scrollbars="vertical"
                 android:textSize="18sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/pb_movie_average_score" />
+
+            <View
+                android:id="@+id/reviews_divider"
+                android:layout_width="0dp"
+                android:layout_height="2dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="56dp"
+                android:layout_marginEnd="56dp"
+                android:background="@color/colorAccent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_movie_synopsis" />
+
+            <include
+                android:id="@+id/reviews"
+                layout="@layout/reviews"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/fl_average_score" />
+                app:layout_constraintTop_toBottomOf="@+id/reviews_divider" />
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>

@@ -5,14 +5,16 @@ import android.databinding.DataBindingUtil;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.text.method.ScrollingMovementMethod;
+import android.widget.TextView;
 
 import com.sfotakos.themovielist.MovieList.MainActivity;
 import com.sfotakos.themovielist.MovieList.Model.Movie;
 import com.sfotakos.themovielist.databinding.ActivityDetailBinding;
 import com.squareup.picasso.Picasso;
 
-//TODO [1] Long titles should go to a new line, implement Toolbar.
+//TODO [1] Long titles should go to a new line, implement custom Toolbar.
 @SuppressWarnings("FieldCanBeLocal")
 public class DetailActivity extends AppCompatActivity {
 
@@ -20,7 +22,7 @@ public class DetailActivity extends AppCompatActivity {
 
     private ActivityDetailBinding mBinding;
 
-    //TODO Add layout for landscape orientation
+    //TODO Add customized layout for landscape orientation
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +47,20 @@ public class DetailActivity extends AppCompatActivity {
                 }
 
                 if (actionBar != null){
-                    //TODO [QUESTION]: The project lesson states an original title, some titles were in japanese, was that the intended use?
-                    actionBar.setTitle(mMovie.getTitle());
-                    actionBar.setSubtitle(formattedReleaseDate);
+
+                    actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+                    actionBar.setDisplayShowCustomEnabled(true);
+                    actionBar.setCustomView(R.layout.actionbar_activity_detail);
+                    actionBar.setDisplayHomeAsUpEnabled(true);
+
+                    TextView title = actionBar.getCustomView().findViewById(R.id.tv_title);
+                    TextView subtitle = actionBar.getCustomView().findViewById(R.id.tv_subtitle);
+                    AppCompatCheckBox favorite =
+                            actionBar.getCustomView().findViewById(R.id.cb_favorite);
+
+                    title.setText(mMovie.getTitle());
+                    subtitle.setText(formattedReleaseDate);
+
                 }
 
                 Picasso.with(this)
@@ -65,4 +78,5 @@ public class DetailActivity extends AppCompatActivity {
             }
         }
     }
+
 }
