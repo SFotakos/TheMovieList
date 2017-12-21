@@ -6,9 +6,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.sfotakos.themovielist.MovieList.MainActivity;
 import com.sfotakos.themovielist.MovieList.Model.Movie;
@@ -36,8 +33,8 @@ public class DetailActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if (intent != null) {
-            if (intent.hasExtra(MainActivity.MOVIE_DATA)) {
-                mMovie = intent.getParcelableExtra(MainActivity.MOVIE_DATA);
+            if (intent.hasExtra(MainActivity.MOVIE_DATA_EXTRA)) {
+                mMovie = intent.getParcelableExtra(MainActivity.MOVIE_DATA_EXTRA);
 
                 //TODO [2] Date object and proper DateFormatter parsing
                 String releaseDate = mMovie.getReleaseDate();

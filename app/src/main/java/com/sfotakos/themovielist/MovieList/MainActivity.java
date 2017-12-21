@@ -5,9 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
-import android.databinding.DataBindingComponent;
 import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -15,12 +15,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.sfotakos.themovielist.DetailActivity;
 import com.sfotakos.themovielist.MovieList.Adapter.MarginItemDecoration;
@@ -33,21 +32,26 @@ import com.sfotakos.themovielist.R;
 import com.sfotakos.themovielist.databinding.ActivityMainBinding;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URL;
 
 //TODO implement on restore state to keep the scroll as it was.
 public class MainActivity extends AppCompatActivity implements MovieListAdapter.MovieItemClickListener {
 
-    public static final String MOVIE_DATA = "MovieData";
+    public static final String MOVIE_DATA_EXTRA = "movie-data";
+    public static final String SCROLL_STATE_KEY = "scroll-state";
 
     private static final int GRID_COLUMNS = 2;
     private static final int DEFAULT_PAGE = 1;
+
+    private boolean isSortingByPopularity = true;
 
     private ActivityMainBinding mBinding;
 
     private MovieListAdapter mAdapter;
 
-    private boolean isSortingByPopularity = true;
+    private Parcelable scrollState;
+    private ConnectivityReceiver connectivityReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_movie_clapboard, null));
+            actionBar.setDisplayShowTitleEnabled(false);
             actionBar.setDisplayShowHomeEnabled(true);
         }
 
@@ -71,10 +76,6 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         mBinding.rvMovies.addItemDecoration(new MarginItemDecoration(marginInPixels, GRID_COLUMNS));
 
         mBinding.rvMovies.setAdapter(mAdapter);
-
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-        registerReceiver(new ConnectivityReceiver(), filter);
 
         fetchMovies();
     }
@@ -144,8 +145,56 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
     @Override
     public void onClick(Movie movie) {
         Intent detailActivityIntent = new Intent(this, DetailActivity.class);
-        detailActivityIntent.putExtra(MOVIE_DATA, movie);
+        detailActivityIntent.putExtra(MOVIE_DATA_EXTRA, movie);
         startActivity(detailActivityIntent);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            scrollState = savedInstanceState.getParcelable(SCROLL_STATE_KEY);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        persistScrollState();
+        outState.putParcelable(SCROLL_STATE_KEY, scrollState);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (connectivityReceiver != null) {
+            unregisterReceiver(connectivityReceiver);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        connectivityReceiver = new ConnectivityReceiver();
+        registerReceiver(connectivityReceiver, filter);
+    }
+
+    private void persistScrollState(){
+        RecyclerView.LayoutManager layoutManager = mBinding.rvMovies.getLayoutManager();
+        scrollState = layoutManager.onSaveInstanceState();
+    }
+
+    private void restoreScrollState(){
+        if (scrollState != null){
+            RecyclerView.LayoutManager layoutManager = mBinding.rvMovies.getLayoutManager();
+            layoutManager.onRestoreInstanceState(scrollState);
+        }
     }
 
     private class FetchMovies extends AsyncTask<MovieRequest, Void, MovieResponse> {
@@ -183,6 +232,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
             if (movieResponse != null) {
                 showMovieList();
                 mAdapter.setMovieList(movieResponse.getMovieList());
+                restoreScrollState();
             } else {
                 showErrorMessage(getResources().getString(R.string.error_default));
             }
@@ -190,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
     }
 
     // Deal with connectivity changes
-    private class ConnectivityReceiver extends BroadcastReceiver {
+    private class ConnectivityReceiver extends BroadcastReceiver implements Serializable {
         @Override
         public void onReceive(Context context, Intent intent) {
 
