@@ -1,6 +1,7 @@
 package com.sfotakos.themovielist;
 
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,34 +12,25 @@ import android.widget.TextView;
 
 import com.sfotakos.themovielist.MovieList.MainActivity;
 import com.sfotakos.themovielist.MovieList.Model.Movie;
+import com.sfotakos.themovielist.databinding.ActivityDetailBinding;
 import com.squareup.picasso.Picasso;
-
 
 //TODO [1] Long titles should go to a new line, implement Toolbar.
 @SuppressWarnings("FieldCanBeLocal")
 public class DetailActivity extends AppCompatActivity {
 
-
     private Movie mMovie;
 
-    private ProgressBar mMovieAvgScoreProgress;
-    private TextView mMovieAvgScoreValue;
-    private TextView mMovieSynopsis;
-    private ImageView mMoviePoster;
+    private ActivityDetailBinding mBinding;
 
     //TODO Add layout for landscape orientation
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_detail);
 
-        mMovieAvgScoreProgress = (ProgressBar) findViewById(R.id.pb_movie_average_score);
-        mMovieAvgScoreValue = (TextView) findViewById(R.id.tv_movie_average_score);
-        mMovieSynopsis = (TextView) findViewById(R.id.tv_movie_synopsis);
-        mMoviePoster = (ImageView) findViewById(R.id.iv_movie_poster);
-
-        mMovieSynopsis.setMovementMethod(new ScrollingMovementMethod());
+        mBinding.tvMovieSynopsis.setMovementMethod(new ScrollingMovementMethod());
 
         ActionBar actionBar = getSupportActionBar();
 
@@ -64,15 +56,15 @@ public class DetailActivity extends AppCompatActivity {
                 Picasso.with(this)
                         .load(mMovie.getPosterPath())
                         .placeholder(R.drawable.ic_movie_clapboard)
-                        .into(mMoviePoster);
+                        .into(mBinding.ivMoviePoster);
 
                 Double voteAvg = mMovie.getVoteAverage()*10;
-                mMovieAvgScoreProgress.setProgress(voteAvg.intValue());
+                mBinding.pbMovieAverageScore.setProgress(voteAvg.intValue());
 
                 String avgScore = String.valueOf(voteAvg.intValue()) + " / 100";
-                mMovieAvgScoreValue.setText(avgScore);
+                mBinding.tvMovieAverageScore.setText(avgScore);
 
-                mMovieSynopsis.setText(String.valueOf(mMovie.getOverview()));
+                mBinding.tvMovieSynopsis.setText(String.valueOf(mMovie.getOverview()));
             }
         }
     }

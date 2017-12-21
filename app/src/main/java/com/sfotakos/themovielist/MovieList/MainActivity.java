@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
+import android.databinding.DataBindingComponent;
+import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.ActionBar;
@@ -28,11 +30,12 @@ import com.sfotakos.themovielist.MovieList.Model.MovieResponse;
 import com.sfotakos.themovielist.MovieList.Model.Movie;
 import com.sfotakos.themovielist.NetworkUtils;
 import com.sfotakos.themovielist.R;
+import com.sfotakos.themovielist.databinding.ActivityMainBinding;
 
 import java.io.IOException;
 import java.net.URL;
 
-//TODO implement on restore state to keep the list as it was.
+//TODO implement on restore state to keep the scroll as it was.
 public class MainActivity extends AppCompatActivity implements MovieListAdapter.MovieItemClickListener {
 
     public static final String MOVIE_DATA = "MovieData";
@@ -40,18 +43,16 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
     private static final int GRID_COLUMNS = 2;
     private static final int DEFAULT_PAGE = 1;
 
-    private RecyclerView mMoviesList;
-    private MovieListAdapter mAdapter;
+    private ActivityMainBinding mBinding;
 
-    private ProgressBar mLoadingIndicator;
-    private TextView mErrorMessage;
+    private MovieListAdapter mAdapter;
 
     private boolean isSortingByPopularity = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -59,21 +60,17 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
             actionBar.setDisplayShowHomeEnabled(true);
         }
 
-        mMoviesList = (RecyclerView) findViewById(R.id.rv_movies);
-        mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
-        mErrorMessage = (TextView) findViewById(R.id.tv_error_message);
-
         mAdapter = new MovieListAdapter(this);
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, GRID_COLUMNS);
 
-        mMoviesList.setLayoutManager(layoutManager);
+        mBinding.rvMovies.setLayoutManager(layoutManager);
 
         // Margins for item decorator
         int marginInPixels = getResources().getDimensionPixelSize(R.dimen.movie_item_margin);
-        mMoviesList.addItemDecoration(new MarginItemDecoration(marginInPixels, GRID_COLUMNS));
+        mBinding.rvMovies.addItemDecoration(new MarginItemDecoration(marginInPixels, GRID_COLUMNS));
 
-        mMoviesList.setAdapter(mAdapter);
+        mBinding.rvMovies.setAdapter(mAdapter);
 
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
@@ -83,13 +80,13 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
     }
 
     private void showMovieList() {
-        mErrorMessage.setVisibility(View.GONE);
-        mMoviesList.setVisibility(View.VISIBLE);
+        mBinding.tvErrorMessage.setVisibility(View.GONE);
+        mBinding.rvMovies.setVisibility(View.VISIBLE);
     }
 
     private void showErrorMessage(String errorMessage) {
-        mErrorMessage.setText(errorMessage);
-        mErrorMessage.setVisibility(View.VISIBLE);
+        mBinding.tvErrorMessage.setText(errorMessage);
+        mBinding.tvErrorMessage.setVisibility(View.VISIBLE);
     }
 
     private void fetchMovies() {
@@ -155,8 +152,8 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
         @Override
         protected void onPreExecute() {
-            mErrorMessage.setVisibility(View.GONE);
-            mLoadingIndicator.setVisibility(View.VISIBLE);
+            mBinding.tvErrorMessage.setVisibility(View.GONE);
+            mBinding.pbLoadingIndicator.setVisibility(View.VISIBLE);
             super.onPreExecute();
         }
 
@@ -182,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
         @Override
         protected void onPostExecute(MovieResponse movieResponse) {
-            mLoadingIndicator.setVisibility(View.INVISIBLE);
+            mBinding.pbLoadingIndicator.setVisibility(View.INVISIBLE);
             if (movieResponse != null) {
                 showMovieList();
                 mAdapter.setMovieList(movieResponse.getMovieList());

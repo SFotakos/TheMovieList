@@ -1,74 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="12dp"
-    tools:context="com.sfotakos.themovielist.DetailActivity"
-    android:scrollbars="vertical"
-    android:fadeScrollbars="false">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <android.support.constraint.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:layout_margin="12dp"
+        android:fadeScrollbars="false"
+        android:scrollbars="vertical"
+        tools:context="com.sfotakos.themovielist.DetailActivity">
 
-        <ImageView
-            android:id="@+id/iv_movie_poster"
-            android:layout_width="wrap_content"
-            android:layout_height="280dp"
-            android:adjustViewBounds="true"
-            android:background="@drawable/movie_frame"
-            android:contentDescription="@string/accessibility_movie_poster"
-            android:cropToPadding="true"
-            android:padding="4dp"
-            android:scaleType="fitCenter"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <FrameLayout
-            android:id="@+id/fl_average_score"
-            android:layout_width="0dp"
-            android:layout_height="36dp"
-            android:paddingBottom="4dp"
-            android:paddingTop="4dp"
-            app:layout_constraintLeft_toLeftOf="@+id/iv_movie_poster"
-            app:layout_constraintRight_toRightOf="@id/iv_movie_poster"
-            app:layout_constraintTop_toBottomOf="@+id/iv_movie_poster">
+            <ImageView
+                android:id="@+id/iv_movie_poster"
+                android:layout_width="wrap_content"
+                android:layout_height="280dp"
+                android:adjustViewBounds="true"
+                android:background="@drawable/movie_frame"
+                android:contentDescription="@string/accessibility_movie_poster"
+                android:cropToPadding="true"
+                android:padding="4dp"
+                android:scaleType="fitCenter"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <ProgressBar
-                android:id="@+id/pb_movie_average_score"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:max="100"
-                android:progress="0"
-                android:progressDrawable="@drawable/horizontal_average_score" />
+            <FrameLayout
+                android:id="@+id/fl_average_score"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:paddingBottom="4dp"
+                android:paddingTop="4dp"
+                app:layout_constraintLeft_toLeftOf="@+id/iv_movie_poster"
+                app:layout_constraintRight_toRightOf="@id/iv_movie_poster"
+                app:layout_constraintTop_toBottomOf="@+id/iv_movie_poster">
+
+                <ProgressBar
+                    android:id="@+id/pb_movie_average_score"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:max="100"
+                    android:progress="0"
+                    android:progressDrawable="@drawable/horizontal_average_score" />
+
+                <TextView
+                    android:id="@+id/tv_movie_average_score"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp" />
+
+            </FrameLayout>
 
             <TextView
-                android:id="@+id/tv_movie_average_score"
+                android:id="@+id/tv_movie_synopsis"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:textColor="@android:color/white"
-                android:textSize="18sp" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:scrollbars="vertical"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fl_average_score" />
 
-        </FrameLayout>
-
-        <TextView
-            android:id="@+id/tv_movie_synopsis"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:scrollbars="vertical"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fl_average_score" />
-
-    </android.support.constraint.ConstraintLayout>
-</ScrollView>
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+</layout>
