@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.sfotakos.themovielist.DetailActivity;
+import com.sfotakos.themovielist.FavoritesActivity;
 import com.sfotakos.themovielist.MovieList.Adapter.MarginItemDecoration;
 import com.sfotakos.themovielist.MovieList.Adapter.MovieListAdapter;
 import com.sfotakos.themovielist.MovieList.Model.MovieRequest;
@@ -124,6 +125,14 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
                 mAdapter.setMovieList(null);
                 fetchMovies();
                 return true;
+
+            case R.id.action_favorites:
+                Intent detailActivityIntent =
+                        new Intent(this, FavoritesActivity.class);
+                startActivity(detailActivityIntent);
+
+                return true;
+
             case R.id.action_about:
 
                 Resources resources = getResources();
@@ -135,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
                 builder.setPositiveButton(resources.getString(android.R.string.ok), null);
                 builder.show();
                 return true;
+
             default:
                 break;
         }

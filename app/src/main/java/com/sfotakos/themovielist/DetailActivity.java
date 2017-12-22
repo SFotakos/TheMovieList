@@ -15,7 +15,6 @@ import com.sfotakos.themovielist.MovieList.Model.Movie;
 import com.sfotakos.themovielist.databinding.ActivityDetailBinding;
 import com.squareup.picasso.Picasso;
 
-//TODO [1] Long titles should go to a new line, implement custom Toolbar.
 @SuppressWarnings("FieldCanBeLocal")
 public class DetailActivity extends AppCompatActivity {
 
@@ -50,12 +49,9 @@ public class DetailActivity extends AppCompatActivity {
                 }
 
                 if (actionBar != null){
-
                     actionBar.setDisplayHomeAsUpEnabled(true);
-
                     actionBar.setTitle(mMovie.getTitle());
                     actionBar.setSubtitle(formattedReleaseDate);
-
                 }
 
                 Picasso.with(this)
