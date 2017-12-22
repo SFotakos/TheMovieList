@@ -4,6 +4,7 @@
     <string name="action_sortByPopularity">Sorting by\npopularity</string>
     <string name="action_sortByRating">Sorting\nby rating</string>
     <string name="action_about">About</string>
+    <string name="action_add_favorite">Add to favorite</string>
 
     <string name="error_default">Something went wrong</string>
     <string name="error_no_connectivity">You\'re offline data might not load correctly.</string>
@@ -18,6 +19,6 @@
 
     <string name="trailers">Trailers</string>
     <string name="reviews">Reviews</string>
-    <string name="action_add_favorite">Add to favorite</string>
+
 
 </resources>
