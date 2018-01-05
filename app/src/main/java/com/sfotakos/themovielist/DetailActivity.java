@@ -1,7 +1,10 @@
 package com.sfotakos.themovielist;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,9 +12,11 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
-import com.sfotakos.themovielist.MovieList.MainActivity;
-import com.sfotakos.themovielist.MovieList.Model.Movie;
+import com.sfotakos.themovielist.general.data.MovieListContract.FavoriteMovieEntry;
+import com.sfotakos.themovielist.movie_list.MainActivity;
+import com.sfotakos.themovielist.general.model.Movie;
 import com.sfotakos.themovielist.databinding.ActivityDetailBinding;
 import com.squareup.picasso.Picasso;
 
@@ -48,7 +53,7 @@ public class DetailActivity extends AppCompatActivity {
                     formattedReleaseDate = "(" + releaseYear + ")";
                 }
 
-                if (actionBar != null){
+                if (actionBar != null) {
                     actionBar.setDisplayHomeAsUpEnabled(true);
                     actionBar.setTitle(mMovie.getTitle());
                     actionBar.setSubtitle(formattedReleaseDate);
@@ -59,7 +64,7 @@ public class DetailActivity extends AppCompatActivity {
                         .placeholder(R.drawable.ic_movie_clapboard)
                         .into(mBinding.ivMoviePoster);
 
-                Double voteAvg = mMovie.getVoteAverage()*10;
+                Double voteAvg = mMovie.getVoteAverage() * 10;
                 mBinding.pbMovieAverageScore.setProgress(voteAvg.intValue());
 
                 String avgScore = String.valueOf(voteAvg.intValue()) + " / 100";
@@ -70,11 +75,42 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
+    private void updateFavoritedIcon(MenuItem item) {
+        if (mFavorited) {
+            item.setIcon(R.drawable.ic_favorite_white);
+        } else {
+            item.setIcon(R.drawable.ic_favorite_border_white);
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.detail, menu);
+
+        isFavorite();
+
+        updateFavoritedIcon(menu.findItem(R.id.action_add_favorite));
+
         return true;
+    }
+
+    private void isFavorite(){
+
+        Uri uriToQuery = FavoriteMovieEntry.CONTENT_URI.buildUpon()
+                .appendPath(String.valueOf(mMovie.getId())).build();
+        Cursor cursor = getContentResolver().query(
+                uriToQuery,
+                null,
+                null,
+                null,
+                null);
+
+        mFavorited = (cursor != null && cursor.getCount() != 0);
+
+        if (cursor != null) {
+            cursor.close();
+        }
     }
 
     @Override
@@ -83,13 +119,34 @@ public class DetailActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_add_favorite:
-                //TODO implement logic based on movieID being on the local favorite list.
-                mFavorited = !mFavorited;
-                if (mFavorited){
-                    item.setIcon(R.drawable.ic_favorite_white);
+
+                if (!mFavorited) {
+                    ContentValues contentValues = new ContentValues();
+
+                    contentValues.put(FavoriteMovieEntry.MOVIE_ID, mMovie.getId());
+                    contentValues.put(FavoriteMovieEntry.RELEASE_DATE, mMovie.getReleaseDate());
+                    contentValues.put(FavoriteMovieEntry.TITLE, mMovie.getTitle());
+                    contentValues.put(FavoriteMovieEntry.POSTER, mMovie.getPosterPath());
+                    contentValues.put(FavoriteMovieEntry.AVERAGE_SCORE, mMovie.getVoteAverage());
+                    contentValues.put(FavoriteMovieEntry.SYNOPSIS, mMovie.getOverview());
+
+                    Uri uri = getContentResolver()
+                            .insert(FavoriteMovieEntry.CONTENT_URI, contentValues);
+
+                    if (uri != null) {
+                        Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
+                        mFavorited = true;
+                    }
                 } else {
-                    item.setIcon(R.drawable.ic_favorite_border_white);
+                    Uri uriToDelete = FavoriteMovieEntry.CONTENT_URI.buildUpon()
+                            .appendPath(String.valueOf(mMovie.getId())).build();
+                    int deleted = getContentResolver().delete(uriToDelete, null, null);
+                    if (deleted > 0){
+                        Toast.makeText(getBaseContext(), String.valueOf(deleted), Toast.LENGTH_LONG).show();
+                        mFavorited = false;
+                    }
                 }
+                updateFavoritedIcon(item);
 
                 return true;
 

@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MovieList.MainActivity"
+            android:name=".movie_list.MainActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,13 +25,18 @@
         <activity android:name=".DetailActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.sfotakos.themovielist.MovieList.MainActivity" />
+                android:value="com.sfotakos.themovielist.movie_list.MainActivity" />
         </activity>
         <activity android:name=".FavoritesActivity">
             <meta-data
             android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.sfotakos.themovielist.MovieList.MainActivity" />
+            android:value="com.sfotakos.themovielist.movie_list.MainActivity" />
         </activity>
-    </application>
 
+        <provider
+            android:name="com.sfotakos.themovielist.general.data.MovieListProvider"
+            android:authorities="com.sfotakos.themovielist"
+            android:exported="false"/>
+
+    </application>
 </manifest>

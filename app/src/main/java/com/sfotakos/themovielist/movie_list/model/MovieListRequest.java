@@ -1,4 +1,4 @@
-package com.sfotakos.themovielist.MovieList.Model;
+package com.sfotakos.themovielist.movie_list.model;
 
 import android.net.Uri;
 
@@ -12,7 +12,7 @@ import java.net.URL;
  */
 
 
-public class MovieRequest {
+public class MovieListRequest {
 
     private static final String DISCOVER_FUNCTIONALITY_PARAM = "discover";
     private static final String POPULAR_FUNCTIONALITY_PARAM = "popular";
@@ -76,11 +76,11 @@ public class MovieRequest {
     private String sortBy;
     private final int page;
 
-    public MovieRequest(String sortBy, int page) {
+    public MovieListRequest(String sortBy, int page) {
         this.sortBy = sortBy;
         this.page = page;
     }
-    public MovieRequest(int page) {
+    public MovieListRequest(int page) {
         this.page = page;
     }
 
@@ -98,7 +98,7 @@ public class MovieRequest {
 
     public URL buildDiscoverMovieRequestURL() {
         if (sortBy == null ) {
-            sortBy = getSortBy(MovieRequest.SortTypes.POPULARITY, MovieRequest.Order.DESCENDING);
+            sortBy = getSortBy(MovieListRequest.SortTypes.POPULARITY, MovieListRequest.Order.DESCENDING);
         }
 
         Uri builtUri = Uri.parse(NetworkUtils.BASE_TMDB_URL).buildUpon()

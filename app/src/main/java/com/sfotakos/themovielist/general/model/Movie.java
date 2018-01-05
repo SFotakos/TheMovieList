@@ -1,4 +1,4 @@
-package com.sfotakos.themovielist.MovieList.Model;
+package com.sfotakos.themovielist.general.model;
 
 import android.annotation.SuppressLint;
 import android.os.Parcel;

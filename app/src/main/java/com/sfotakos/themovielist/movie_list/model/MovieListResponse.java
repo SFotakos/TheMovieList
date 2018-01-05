@@ -1,4 +1,6 @@
-package com.sfotakos.themovielist.MovieList.Model;
+package com.sfotakos.themovielist.movie_list.model;
+
+import com.sfotakos.themovielist.general.model.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,14 +13,14 @@ import java.util.List;
  * Created by spyridion on 12/10/17.
  */
 
-public class MovieResponse {
+public class MovieListResponse {
     private Integer page;
     private Integer totalResults;
     private Integer totalPages;
 
     private List<Movie> movieList = new ArrayList<>();
 
-    public MovieResponse(String discoverMovieJsonResponse) {
+    public MovieListResponse(String discoverMovieJsonResponse) {
         try {
             getMovieResponseFromJson(discoverMovieJsonResponse);
         } catch (JSONException e) {
@@ -59,7 +61,7 @@ public class MovieResponse {
         this.movieList = movieList;
     }
 
-    private void getMovieResponseFromJson(String discoverMovieString) throws JSONException {
+    private void getMovieResponseFromJson(String movieString) throws JSONException {
 
         final String PAGE = "page";
         final String TOTAL_PAGES = "total_pages";
@@ -82,20 +84,24 @@ public class MovieResponse {
         final String OVERVIEW = "overview";
         final String RELEASE_DATE = "release_date";
 
+        final String AUTHOR = "author";
+        final String CONTENT = "content";
+        final String URL = "url";
 
-        JSONObject discoverMovieJson = new JSONObject(discoverMovieString);
 
-        if (discoverMovieJson.has(TOTAL_RESULTS)) {
-            int resultsAmount = discoverMovieJson.getInt(TOTAL_RESULTS);
+        JSONObject movieJson = new JSONObject(movieString);
+
+        if (movieJson.has(TOTAL_RESULTS)) {
+            int resultsAmount = movieJson.getInt(TOTAL_RESULTS);
 
             if (resultsAmount == 0) return;
         }
 
-        page = discoverMovieJson.getInt(PAGE);
-        totalPages = discoverMovieJson.getInt(TOTAL_PAGES);
-        totalResults = discoverMovieJson.getInt(TOTAL_RESULTS);
+        page = movieJson.getInt(PAGE);
+        totalPages = movieJson.getInt(TOTAL_PAGES);
+        totalResults = movieJson.getInt(TOTAL_RESULTS);
 
-        JSONArray moviesArray = discoverMovieJson.getJSONArray(RESULTS);
+        JSONArray moviesArray = movieJson.getJSONArray(RESULTS);
 
         for (int i = 0; i < moviesArray.length(); i++) {
             Movie movie = new Movie();

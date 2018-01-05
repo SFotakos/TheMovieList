@@ -1,4 +1,4 @@
-package com.sfotakos.themovielist.MovieList.Adapter;
+package com.sfotakos.themovielist.movie_list.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,8 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.sfotakos.themovielist.MovieList.Model.Movie;
 import com.sfotakos.themovielist.R;
+import com.sfotakos.themovielist.general.model.Movie;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.sfotakos.themovielist.MovieList;
+package com.sfotakos.themovielist.movie_list;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,7 +15,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,11 +22,11 @@ import android.view.View;
 
 import com.sfotakos.themovielist.DetailActivity;
 import com.sfotakos.themovielist.FavoritesActivity;
-import com.sfotakos.themovielist.MovieList.Adapter.MarginItemDecoration;
-import com.sfotakos.themovielist.MovieList.Adapter.MovieListAdapter;
-import com.sfotakos.themovielist.MovieList.Model.MovieRequest;
-import com.sfotakos.themovielist.MovieList.Model.MovieResponse;
-import com.sfotakos.themovielist.MovieList.Model.Movie;
+import com.sfotakos.themovielist.general.model.Movie;
+import com.sfotakos.themovielist.movie_list.adapter.MarginItemDecoration;
+import com.sfotakos.themovielist.movie_list.adapter.MovieListAdapter;
+import com.sfotakos.themovielist.movie_list.model.MovieListRequest;
+import com.sfotakos.themovielist.movie_list.model.MovieListResponse;
 import com.sfotakos.themovielist.NetworkUtils;
 import com.sfotakos.themovielist.R;
 import com.sfotakos.themovielist.databinding.ActivityMainBinding;
@@ -93,8 +92,8 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
     private void fetchMovies() {
         if (NetworkUtils.hasConnection(this)) {
-            MovieRequest movieRequest = new MovieRequest(DEFAULT_PAGE);
-            new FetchMovies().execute(movieRequest);
+            MovieListRequest movieListRequest = new MovieListRequest(DEFAULT_PAGE);
+            new FetchMovies().execute(movieListRequest);
         } else {
             showErrorMessage(getResources().getString(R.string.error_no_connectivity));
         }
@@ -207,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         }
     }
 
-    private class FetchMovies extends AsyncTask<MovieRequest, Void, MovieResponse> {
+    private class FetchMovies extends AsyncTask<MovieListRequest, Void, MovieListResponse> {
 
         @Override
         protected void onPreExecute() {
@@ -217,19 +216,19 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         }
 
         @Override
-        protected MovieResponse doInBackground(MovieRequest... movieRequests) {
+        protected MovieListResponse doInBackground(MovieListRequest... movieListRequests) {
 
-            MovieRequest movieRequest = movieRequests[0];
+            MovieListRequest movieListRequest = movieListRequests[0];
             URL requestURL;
             if (isSortingByPopularity) {
-                requestURL = movieRequest.buildPopularMovieRequestURL();
+                requestURL = movieListRequest.buildPopularMovieRequestURL();
             } else {
-                requestURL = movieRequest.buildTopRatedMovieRequestURL();
+                requestURL = movieListRequest.buildTopRatedMovieRequestURL();
             }
 
             try {
                 String jsonResponse = NetworkUtils.getResponseFromHttpUrl(requestURL);
-                return new MovieResponse(jsonResponse);
+                return new MovieListResponse(jsonResponse);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -237,11 +236,11 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         }
 
         @Override
-        protected void onPostExecute(MovieResponse movieResponse) {
+        protected void onPostExecute(MovieListResponse movieListResponse) {
             mBinding.pbLoadingIndicator.setVisibility(View.INVISIBLE);
-            if (movieResponse != null) {
+            if (movieListResponse != null) {
                 showMovieList();
-                mAdapter.setMovieList(movieResponse.getMovieList());
+                mAdapter.setMovieList(movieListResponse.getMovieList());
                 restoreScrollState();
             } else {
                 showErrorMessage(getResources().getString(R.string.error_default));
