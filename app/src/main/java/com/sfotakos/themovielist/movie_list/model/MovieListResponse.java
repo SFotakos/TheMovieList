@@ -114,7 +114,7 @@ public class MovieListResponse {
             movie.setVoteAverage(movieJsonObject.getDouble(VOTE_AVERAGE));
             movie.setTitle(movieJsonObject.getString(TITLE));
             movie.setPopularity(movieJsonObject.getDouble(POPULARITY));
-            movie.setPosterPath(movieJsonObject.getString(POSTER_PATH));
+            movie.appendPosterPath(movieJsonObject.getString(POSTER_PATH));
             movie.setOriginalLanguage(movieJsonObject.getString(ORIGINAL_LANGUAGE));
             movie.setOriginalTitle(movieJsonObject.getString(ORIGINAL_TITLE));
 

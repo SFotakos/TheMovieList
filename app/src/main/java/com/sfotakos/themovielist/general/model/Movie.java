@@ -87,8 +87,12 @@ public class Movie implements Parcelable {
         return posterPath;
     }
 
-    public void setPosterPath(String posterPath) {
-        this.posterPath = BASE_POSTER_URL + "/" + POSTER_SIZE + "/" + posterPath;
+    public void appendPosterPath(String posterPath) {
+        this.posterPath = BASE_POSTER_URL + "/" + POSTER_SIZE  + posterPath;
+    }
+
+    public void setFullPosterPath(String posterPath){
+        this.posterPath = posterPath;
     }
 
     public String getOriginalLanguage() {

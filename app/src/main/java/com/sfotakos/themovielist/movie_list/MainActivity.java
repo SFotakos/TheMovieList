@@ -38,7 +38,6 @@ import java.net.URL;
 //TODO implement on restore state to keep the scroll as it was.
 public class MainActivity extends AppCompatActivity implements MovieListAdapter.MovieItemClickListener {
 
-    public static final String MOVIE_DATA_EXTRA = "movie-data";
     public static final String SCROLL_STATE_KEY = "scroll-state";
 
     private static final int GRID_COLUMNS = 2;
@@ -154,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
     @Override
     public void onClick(Movie movie) {
         Intent detailActivityIntent = new Intent(this, DetailActivity.class);
-        detailActivityIntent.putExtra(MOVIE_DATA_EXTRA, movie);
+        detailActivityIntent.putExtra(DetailActivity.MOVIE_DATA_EXTRA, movie);
         startActivity(detailActivityIntent);
     }
 

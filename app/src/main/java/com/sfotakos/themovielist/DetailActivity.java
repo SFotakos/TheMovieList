@@ -15,13 +15,14 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.sfotakos.themovielist.general.data.MovieListContract.FavoriteMovieEntry;
-import com.sfotakos.themovielist.movie_list.MainActivity;
 import com.sfotakos.themovielist.general.model.Movie;
 import com.sfotakos.themovielist.databinding.ActivityDetailBinding;
 import com.squareup.picasso.Picasso;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class DetailActivity extends AppCompatActivity {
+
+    public static final String MOVIE_DATA_EXTRA = "movie-data";
 
     private Movie mMovie;
 
@@ -42,8 +43,8 @@ public class DetailActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if (intent != null) {
-            if (intent.hasExtra(MainActivity.MOVIE_DATA_EXTRA)) {
-                mMovie = intent.getParcelableExtra(MainActivity.MOVIE_DATA_EXTRA);
+            if (intent.hasExtra(MOVIE_DATA_EXTRA)) {
+                mMovie = intent.getParcelableExtra(MOVIE_DATA_EXTRA);
 
                 //TODO [2] Date object and proper DateFormatter parsing
                 String releaseDate = mMovie.getReleaseDate();
