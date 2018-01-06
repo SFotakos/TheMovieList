@@ -32,13 +32,5 @@
                 android:layout_height="match_parent" />
 
         </LinearLayout>
-
-        <ProgressBar
-            android:id="@+id/pb_loading_indicator"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:layout_gravity="center"
-            android:visibility="invisible" />
-
     </LinearLayout>
 </layout>

@@ -1,13 +1,11 @@
 package com.sfotakos.themovielist.movie_details;
 
-import android.content.BroadcastReceiver;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
@@ -16,48 +14,40 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSnapHelper;
-import android.support.v7.widget.SnapHelper;
-import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.view.View;
 
+import com.sfotakos.themovielist.ConnectivityReceiver;
 import com.sfotakos.themovielist.FavoritesActivity;
 import com.sfotakos.themovielist.R;
+import com.sfotakos.themovielist.general.IErrorMessages;
 import com.sfotakos.themovielist.general.NetworkUtils;
 import com.sfotakos.themovielist.general.data.MovieListContract.FavoriteMovieEntry;
 import com.sfotakos.themovielist.general.model.Movie;
 import com.sfotakos.themovielist.databinding.ActivityDetailBinding;
-import com.sfotakos.themovielist.movie_details.adapter.ReviewsAdapter;
-import com.sfotakos.themovielist.movie_details.model.MovieReviewRequest;
-import com.sfotakos.themovielist.movie_details.model.MovieReviewResponse;
 import com.sfotakos.themovielist.movie_list.MainActivity;
-import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.net.URL;
 import java.security.InvalidParameterException;
 
 @SuppressWarnings("FieldCanBeLocal")
-public class DetailsActivity extends AppCompatActivity {
+public class DetailsActivity extends AppCompatActivity
+        implements ConnectivityReceiver.IConnectivityChange,
+        IErrorMessages{
 
     public static final String MOVIE_DATA_EXTRA = "movie-data";
     public static final String MAIN_ACTIVITY_PARENT = "main-activity";
     public static final String FAVORITES_ACTIVITY_PARENT = "favorites-activity";
 
-    private Movie mMovie = null;
+    public static final String CURRENT_FRAGMENT_TAG = "current-fragment";
 
     private ActivityDetailBinding mBinding;
 
-
-
     private boolean mFavorited = false;
 
-    //TODO Add customized layout for landscape orientation
+    private Movie mMovie = null;
+    private ConnectivityReceiver connectivityReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,10 +77,6 @@ public class DetailsActivity extends AppCompatActivity {
                     actionBar.setTitle(mMovie.getTitle());
                     actionBar.setSubtitle(formattedReleaseDate);
                 }
-
-
-
-//                fetchReviews();
             }
         }
 
@@ -102,6 +88,8 @@ public class DetailsActivity extends AppCompatActivity {
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        showErrorMessage(null);
+
                         Fragment fragment;
                         switch (item.getItemId()) {
                             case R.id.nav_details:
@@ -113,7 +101,7 @@ public class DetailsActivity extends AppCompatActivity {
                                 break;
 
                             case R.id.nav_trailers:
-                                fragment = DetailsFragment.newInstance(mMovie);
+                                fragment = TrailersFragment.newInstance(mMovie.getId());
                                 break;
 
                             default:
@@ -123,50 +111,34 @@ public class DetailsActivity extends AppCompatActivity {
                         try {
                             FragmentManager fragmentManager = getSupportFragmentManager();
                             fragmentManager.beginTransaction()
-                                    .replace(R.id.fragment_container_fl, fragment).commit();
+                                    .replace(R.id.fragment_container_fl,
+                                            fragment, CURRENT_FRAGMENT_TAG).commit();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
                         return true;
                     }
                 });
         mBinding.bottomNavigation.setSelectedItemId(R.id.nav_details);
     }
 
-    private void updateFavoritedIcon(MenuItem item) {
-        if (mFavorited) {
-            item.setIcon(R.drawable.ic_favorite_white);
-        } else {
-            item.setIcon(R.drawable.ic_favorite_border_white);
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (connectivityReceiver != null) {
+            unregisterReceiver(connectivityReceiver);
         }
     }
 
-    private void isFavorite() {
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-        Uri uriToQuery = FavoriteMovieEntry.CONTENT_URI.buildUpon()
-                .appendPath(String.valueOf(mMovie.getId())).build();
-        Cursor cursor = getContentResolver().query(
-                uriToQuery,
-                null,
-                null,
-                null,
-                null);
-
-        mFavorited = (cursor != null && cursor.getCount() != 0);
-
-        if (cursor != null) {
-            cursor.close();
-        }
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        connectivityReceiver = new ConnectivityReceiver(this);
+        registerReceiver(connectivityReceiver, filter);
     }
-
-    private void showErrorMessage(String errorMessage) {
-        //mBinding.tvErrorMessage.setText(errorMessage);
-        //mBinding.tvErrorMessage.setVisibility(View.VISIBLE);
-    }
-
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -174,7 +146,6 @@ public class DetailsActivity extends AppCompatActivity {
         menuInflater.inflate(R.menu.detail_toolbar, menu);
 
         isFavorite();
-
         updateFavoritedIcon(menu.findItem(R.id.action_add_favorite));
 
         return true;
@@ -182,11 +153,9 @@ public class DetailsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         int id = item.getItemId();
         switch (id) {
             case R.id.action_add_favorite:
-
                 if (!mFavorited) {
                     ContentValues contentValues = new ContentValues();
 
@@ -212,11 +181,7 @@ public class DetailsActivity extends AppCompatActivity {
                     }
                 }
                 updateFavoritedIcon(item);
-
                 return true;
-
-            default:
-                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -255,19 +220,50 @@ public class DetailsActivity extends AppCompatActivity {
         return navigationIntent;
     }
 
+    @Override
+    public void showErrorMessage(@Nullable String errorMessage) {
+        mBinding.tvErrorMessage.setText(errorMessage);
+        mBinding.tvErrorMessage.setVisibility(errorMessage == null ? View.GONE : View.VISIBLE);
+    }
 
-    // Deal with connectivity changes
-    private class ConnectivityReceiver extends BroadcastReceiver implements Serializable {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            if (NetworkUtils.hasConnection(context)) {
-
-            } else {
-                showErrorMessage(getResources().getString(R.string.error_no_connectivity));
+    @Override
+    public void connectivityChanged() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment currentFragment = fragmentManager.findFragmentByTag(CURRENT_FRAGMENT_TAG);
+        if (NetworkUtils.hasConnection(this)) {
+            if (currentFragment != null && currentFragment.isVisible()) {
+                if (currentFragment instanceof ReviewsFragment) {
+                    ((ReviewsFragment) currentFragment).fetchReviews();
+                } else if (currentFragment instanceof TrailersFragment){
+                    ((TrailersFragment) currentFragment).fetchTrailers();
+                }
             }
         }
     }
 
+    private void updateFavoritedIcon(MenuItem item) {
+        if (mFavorited) {
+            item.setIcon(R.drawable.ic_favorite_white);
+        } else {
+            item.setIcon(R.drawable.ic_favorite_border_white);
+        }
+    }
 
+    private void isFavorite() {
+        Uri uriToQuery = FavoriteMovieEntry.CONTENT_URI.buildUpon()
+                .appendPath(String.valueOf(mMovie.getId())).build();
+        Cursor cursor = getContentResolver().query(
+                uriToQuery,
+                null,
+                null,
+                null,
+                null);
+
+        mFavorited = (cursor != null && cursor.getCount() != 0);
+
+        if (cursor != null) {
+            cursor.close();
+        }
+    }
 }
+

@@ -8,11 +8,11 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/tv_no_reviews"
-            android:text="@string/no_reviews"
+            android:id="@+id/tv_no_trailers"
+            android:text="@string/no_trailers"
             android:textSize="20sp"
             android:textColor="@color/light_gray"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:shadowColor="@android:color/white"
@@ -22,16 +22,16 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintLeft_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent" />
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_reviews"
+            android:id="@+id/rv_trailers"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"/>
 
     </android.support.constraint.ConstraintLayout>
 </layout>

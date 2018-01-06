@@ -1,7 +1,5 @@
 package com.sfotakos.themovielist.movie_list;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
@@ -21,6 +19,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.sfotakos.themovielist.ConnectivityReceiver;
+import com.sfotakos.themovielist.general.IErrorMessages;
 import com.sfotakos.themovielist.movie_details.DetailsActivity;
 import com.sfotakos.themovielist.FavoritesActivity;
 import com.sfotakos.themovielist.general.model.Movie;
@@ -33,10 +33,12 @@ import com.sfotakos.themovielist.R;
 import com.sfotakos.themovielist.databinding.ActivityMainBinding;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity implements MovieListAdapter.MovieItemClickListener {
+public class MainActivity extends AppCompatActivity implements
+        MovieListAdapter.MovieItemClickListener,
+        ConnectivityReceiver.IConnectivityChange,
+        IErrorMessages{
 
     public static final String SCROLL_STATE_KEY = "scroll-state";
 
@@ -81,44 +83,10 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         fetchMovies();
     }
 
-    private void setGridColumns() {
-        int orientation = getResources().getConfiguration().orientation;
-        switch (orientation) {
-            case Configuration.ORIENTATION_PORTRAIT:
-                gridColumns = 2;
-                break;
-            case Configuration.ORIENTATION_LANDSCAPE:
-                gridColumns = 3;
-                break;
-            default:
-                gridColumns = DEFAULT_GRID_COLUMNS;
-                break;
-        }
-    }
-
-    private void showMovieList() {
-        mBinding.tvErrorMessage.setVisibility(View.GONE);
-        mBinding.rvMovies.setVisibility(View.VISIBLE);
-    }
-
-    private void showErrorMessage(String errorMessage) {
-        mBinding.tvErrorMessage.setText(errorMessage);
-        mBinding.tvErrorMessage.setVisibility(View.VISIBLE);
-    }
-
-    private void fetchMovies() {
-        if (NetworkUtils.hasConnection(this)) {
-            MovieListRequest movieListRequest = new MovieListRequest(DEFAULT_PAGE);
-            new FetchMovies().execute(movieListRequest);
-        } else {
-            showErrorMessage(getResources().getString(R.string.error_no_connectivity));
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.main, menu);
+        menuInflater.inflate(R.menu.main_toolbar, menu);
         return true;
     }
 
@@ -207,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-        connectivityReceiver = new ConnectivityReceiver();
+        connectivityReceiver = new ConnectivityReceiver(this);
         registerReceiver(connectivityReceiver, filter);
     }
 
@@ -223,12 +191,55 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         }
     }
 
+    @Override
+    public void connectivityChanged() {
+        if (NetworkUtils.hasConnection(this)) {
+            fetchMovies();
+        } else {
+            showErrorMessage(getResources().getString(R.string.error_no_connectivity));
+        }
+    }
+
+
+    private void setGridColumns() {
+        int orientation = getResources().getConfiguration().orientation;
+        switch (orientation) {
+            case Configuration.ORIENTATION_PORTRAIT:
+                gridColumns = 2;
+                break;
+            case Configuration.ORIENTATION_LANDSCAPE:
+                gridColumns = 3;
+                break;
+            default:
+                gridColumns = DEFAULT_GRID_COLUMNS;
+                break;
+        }
+    }
+
+    private void showMovieList() {
+        mBinding.tvErrorMessage.setVisibility(View.GONE);
+        mBinding.rvMovies.setVisibility(View.VISIBLE);
+    }
+
+    public void showErrorMessage(String errorMessage) {
+        mBinding.tvErrorMessage.setText(errorMessage);
+        mBinding.tvErrorMessage.setVisibility(View.VISIBLE);
+    }
+
+    private void fetchMovies() {
+        if (NetworkUtils.hasConnection(this)) {
+            MovieListRequest movieListRequest = new MovieListRequest(DEFAULT_PAGE);
+            new FetchMovies().execute(movieListRequest);
+        } else {
+            showErrorMessage(getResources().getString(R.string.error_no_connectivity));
+        }
+    }
+
     private class FetchMovies extends AsyncTask<MovieListRequest, Void, MovieListResponse> {
 
         @Override
         protected void onPreExecute() {
             mBinding.tvErrorMessage.setVisibility(View.GONE);
-            mBinding.pbLoadingIndicator.setVisibility(View.VISIBLE);
             super.onPreExecute();
         }
 
@@ -254,26 +265,12 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
         @Override
         protected void onPostExecute(MovieListResponse movieListResponse) {
-            mBinding.pbLoadingIndicator.setVisibility(View.INVISIBLE);
             if (movieListResponse != null) {
                 showMovieList();
                 mAdapter.setMovieList(movieListResponse.getMovieList());
                 restoreScrollState();
             } else {
                 showErrorMessage(getResources().getString(R.string.error_default));
-            }
-        }
-    }
-
-    // Deal with connectivity changes
-    private class ConnectivityReceiver extends BroadcastReceiver implements Serializable {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            if (NetworkUtils.hasConnection(context)) {
-                fetchMovies();
-            } else {
-                showErrorMessage(getResources().getString(R.string.error_no_connectivity));
             }
         }
     }

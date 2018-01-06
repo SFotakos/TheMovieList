@@ -62,7 +62,7 @@ public class DetailsFragment extends Fragment {
         mBinding.tvMovieAverageScore.setText(avgScore);
 
         mBinding.tvMovieSynopsis.setText(String.valueOf(mMovie.getOverview()));
-//        mBinding.tvMovieSynopsis.setMovementMethod(new ScrollingMovementMethod());
+        mBinding.tvMovieSynopsis.setMovementMethod(new ScrollingMovementMethod());
 
         return fragmentView;
     }
