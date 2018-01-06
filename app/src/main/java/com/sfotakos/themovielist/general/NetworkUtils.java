@@ -1,8 +1,10 @@
-package com.sfotakos.themovielist;
+package com.sfotakos.themovielist.general;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+
+import com.sfotakos.themovielist.BuildConfig;
 
 import java.io.IOException;
 import java.io.InputStream;

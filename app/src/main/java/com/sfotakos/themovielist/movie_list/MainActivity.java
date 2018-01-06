@@ -27,7 +27,7 @@ import com.sfotakos.themovielist.movie_list.adapter.MarginItemDecoration;
 import com.sfotakos.themovielist.movie_list.adapter.MovieListAdapter;
 import com.sfotakos.themovielist.movie_list.model.MovieListRequest;
 import com.sfotakos.themovielist.movie_list.model.MovieListResponse;
-import com.sfotakos.themovielist.NetworkUtils;
+import com.sfotakos.themovielist.general.NetworkUtils;
 import com.sfotakos.themovielist.R;
 import com.sfotakos.themovielist.databinding.ActivityMainBinding;
 
@@ -258,7 +258,5 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
                 showErrorMessage(getResources().getString(R.string.error_no_connectivity));
             }
         }
-
-
     }
 }

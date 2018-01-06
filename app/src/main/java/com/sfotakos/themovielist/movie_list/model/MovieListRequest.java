@@ -2,7 +2,7 @@ package com.sfotakos.themovielist.movie_list.model;
 
 import android.net.Uri;
 
-import com.sfotakos.themovielist.NetworkUtils;
+import com.sfotakos.themovielist.general.NetworkUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
