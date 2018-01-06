@@ -1,4 +1,4 @@
-package com.sfotakos.themovielist;
+package com.sfotakos.themovielist.movie_details;
 
 import android.content.ContentValues;
 import android.content.Intent;
@@ -15,6 +15,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.sfotakos.themovielist.FavoritesActivity;
+import com.sfotakos.themovielist.R;
 import com.sfotakos.themovielist.general.data.MovieListContract.FavoriteMovieEntry;
 import com.sfotakos.themovielist.general.model.Movie;
 import com.sfotakos.themovielist.databinding.ActivityDetailBinding;

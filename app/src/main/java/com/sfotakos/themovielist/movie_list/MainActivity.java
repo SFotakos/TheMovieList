@@ -20,7 +20,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.sfotakos.themovielist.DetailActivity;
+import com.sfotakos.themovielist.movie_details.DetailActivity;
 import com.sfotakos.themovielist.FavoritesActivity;
 import com.sfotakos.themovielist.general.model.Movie;
 import com.sfotakos.themovielist.movie_list.adapter.MarginItemDecoration;

@@ -11,7 +11,7 @@
         android:scrollbarStyle="outsideInset"
         android:fillViewport="true"
         android:scrollbars="vertical"
-        tools:context="com.sfotakos.themovielist.DetailActivity">
+        tools:context="com.sfotakos.themovielist.movie_details.DetailActivity">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"

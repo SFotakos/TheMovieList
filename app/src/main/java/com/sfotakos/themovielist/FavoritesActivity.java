@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 
 
 import com.sfotakos.themovielist.general.model.Movie;
+import com.sfotakos.themovielist.movie_details.DetailActivity;
 import com.sfotakos.themovielist.movie_list.adapter.MarginItemDecoration;
 import com.sfotakos.themovielist.movie_list.adapter.MovieListAdapter;
 import com.sfotakos.themovielist.databinding.ActivityFavoritesBinding;
