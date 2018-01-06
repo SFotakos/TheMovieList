@@ -20,7 +20,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.sfotakos.themovielist.movie_details.DetailActivity;
+import com.sfotakos.themovielist.movie_details.DetailsActivity;
 import com.sfotakos.themovielist.FavoritesActivity;
 import com.sfotakos.themovielist.general.model.Movie;
 import com.sfotakos.themovielist.movie_list.adapter.MarginItemDecoration;
@@ -124,9 +124,9 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
                 return true;
 
             case R.id.action_favorites:
-                Intent detailActivityIntent =
+                Intent favoritesActivityIntent =
                         new Intent(this, FavoritesActivity.class);
-                startActivity(detailActivityIntent);
+                startActivity(favoritesActivityIntent);
 
                 return true;
 
@@ -151,10 +151,10 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
     @Override
     public void onClick(Movie movie) {
-        Intent detailActivityIntent = new Intent(this, DetailActivity.class);
-        detailActivityIntent.putExtra(DetailActivity.MOVIE_DATA_EXTRA, movie);
-        detailActivityIntent.setAction(DetailActivity.MAIN_ACTIVITY_PARENT);
-        startActivity(detailActivityIntent);
+        Intent detailsActivityIntent = new Intent(this, DetailsActivity.class);
+        detailsActivityIntent.putExtra(DetailsActivity.MOVIE_DATA_EXTRA, movie);
+        detailsActivityIntent.setAction(DetailsActivity.MAIN_ACTIVITY_PARENT);
+        startActivity(detailsActivityIntent);
     }
 
     @Override

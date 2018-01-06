@@ -7,18 +7,15 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSnapHelper;
-import android.support.v7.widget.SnapHelper;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.sfotakos.themovielist.FavoritesActivity;
@@ -27,32 +24,25 @@ import com.sfotakos.themovielist.general.NetworkUtils;
 import com.sfotakos.themovielist.general.data.MovieListContract.FavoriteMovieEntry;
 import com.sfotakos.themovielist.general.model.Movie;
 import com.sfotakos.themovielist.databinding.ActivityDetailBinding;
-import com.sfotakos.themovielist.movie_details.model.MovieReviewRequest;
-import com.sfotakos.themovielist.movie_details.model.MovieReviewResponse;
 import com.sfotakos.themovielist.movie_list.MainActivity;
+import com.sfotakos.themovielist.movie_reviews.ReviewsActivity;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.net.URL;
 import java.security.InvalidParameterException;
 
 @SuppressWarnings("FieldCanBeLocal")
-public class DetailActivity extends AppCompatActivity {
+public class DetailsActivity extends AppCompatActivity {
 
     public static final String MOVIE_DATA_EXTRA = "movie-data";
     public static final String MAIN_ACTIVITY_PARENT = "main-activity";
     public static final String FAVORITES_ACTIVITY_PARENT = "favorites-activity";
 
-    private static final int DEFAULT_PAGE = 1;
-
-    private Movie mMovie;
-
     private ActivityDetailBinding mBinding;
 
-    private ReviewsAdapter reviewsAdapter = new ReviewsAdapter();
-
     private boolean mFavorited = false;
+
+    private Movie mMovie;
 
     //TODO Add customized layout for landscape orientation
 
@@ -100,18 +90,20 @@ public class DetailActivity extends AppCompatActivity {
 
                 mBinding.tvMovieSynopsis.setText(String.valueOf(mMovie.getOverview()));
 
-                LinearLayoutManager reviewsLayoutManager =
-                        new LinearLayoutManager(this,
-                                LinearLayoutManager.HORIZONTAL, false);
-                mBinding.reviews.rvReviews.setLayoutManager(reviewsLayoutManager);
-                mBinding.reviews.rvReviews.setAdapter(reviewsAdapter);
-
-                SnapHelper snapHelper = new LinearSnapHelper();
-                snapHelper.attachToRecyclerView(mBinding.reviews.rvReviews);
-
-                fetchReviews();
+                mBinding.tvReviews.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        navigateToReviewsActivity();
+                    }
+                });
             }
         }
+    }
+
+    private void navigateToReviewsActivity(){
+        Intent reviewsActivityIntent = new Intent(this, ReviewsActivity.class);
+        reviewsActivityIntent.putExtra(ReviewsActivity.MOVIE_ID, mMovie.getId());
+        startActivity(reviewsActivityIntent);
     }
 
     private void updateFavoritedIcon(MenuItem item) {
@@ -143,17 +135,6 @@ public class DetailActivity extends AppCompatActivity {
     private void showErrorMessage(String errorMessage) {
         //mBinding.tvErrorMessage.setText(errorMessage);
         //mBinding.tvErrorMessage.setVisibility(View.VISIBLE);
-    }
-
-    private void fetchReviews() {
-        if (NetworkUtils.hasConnection(this)) {
-            MovieReviewRequest movieReviewRequest =
-                    new MovieReviewRequest(mMovie.getId(), DEFAULT_PAGE);
-
-            new FetchReviews().execute(movieReviewRequest);
-        } else {
-            showErrorMessage(getResources().getString(R.string.error_no_connectivity));
-        }
     }
 
     @Override
@@ -245,49 +226,13 @@ public class DetailActivity extends AppCompatActivity {
         return navigationIntent;
     }
 
-    private class FetchReviews extends AsyncTask<MovieReviewRequest, Void, MovieReviewResponse> {
-
-        @Override
-        protected void onPreExecute() {
-            //mBinding.tvErrorMessage.setVisibility(View.GONE);
-            //mBinding.pbLoadingIndicator.setVisibility(View.VISIBLE);
-            super.onPreExecute();
-        }
-
-        @Override
-        protected MovieReviewResponse doInBackground(MovieReviewRequest... movieListRequests) {
-
-            MovieReviewRequest movieListRequest = movieListRequests[0];
-            URL requestURL = movieListRequest.buildMovieReviewsRequest();
-
-            try {
-                String jsonResponse = NetworkUtils.getResponseFromHttpUrl(requestURL);
-                return new MovieReviewResponse(jsonResponse);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(MovieReviewResponse movieReviewResponse) {
-            //mBinding.pbLoadingIndicator.setVisibility(View.INVISIBLE);
-            if (movieReviewResponse != null) {
-                //showMovieList();
-                reviewsAdapter.setReviewList(movieReviewResponse.getReviewList());
-            } else {
-                showErrorMessage(getResources().getString(R.string.error_default));
-            }
-        }
-    }
-
     // Deal with connectivity changes
     private class ConnectivityReceiver extends BroadcastReceiver implements Serializable {
         @Override
         public void onReceive(Context context, Intent intent) {
 
             if (NetworkUtils.hasConnection(context)) {
-                fetchReviews();
+                //fetchReviews();
             } else {
                 showErrorMessage(getResources().getString(R.string.error_no_connectivity));
             }

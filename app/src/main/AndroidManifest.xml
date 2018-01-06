@@ -22,21 +22,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".movie_details.DetailActivity">
+        <activity android:name=".movie_details.DetailsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.sfotakos.themovielist.movie_list.MainActivity" />
         </activity>
         <activity android:name=".FavoritesActivity">
             <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.sfotakos.themovielist.movie_list.MainActivity" />
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.sfotakos.themovielist.movie_list.MainActivity" />
         </activity>
 
         <provider
-            android:name="com.sfotakos.themovielist.general.data.MovieListProvider"
+            android:name=".general.data.MovieListProvider"
             android:authorities="com.sfotakos.themovielist"
-            android:exported="false"/>
+            android:exported="false" />
 
+        <activity
+            android:name=".movie_reviews.ReviewsActivity"
+            android:label="@string/title_activity_reviews"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
+
 </manifest>

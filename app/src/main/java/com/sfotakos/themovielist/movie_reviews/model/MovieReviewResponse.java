@@ -1,4 +1,4 @@
-package com.sfotakos.themovielist.movie_details.model;
+package com.sfotakos.themovielist.movie_reviews.model;
 
 import com.sfotakos.themovielist.general.model.Review;
 

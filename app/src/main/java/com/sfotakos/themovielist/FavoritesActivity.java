@@ -11,7 +11,7 @@ import android.support.v7.widget.RecyclerView;
 
 
 import com.sfotakos.themovielist.general.model.Movie;
-import com.sfotakos.themovielist.movie_details.DetailActivity;
+import com.sfotakos.themovielist.movie_details.DetailsActivity;
 import com.sfotakos.themovielist.movie_list.adapter.MarginItemDecoration;
 import com.sfotakos.themovielist.movie_list.adapter.MovieListAdapter;
 import com.sfotakos.themovielist.databinding.ActivityFavoritesBinding;
@@ -86,9 +86,9 @@ public class FavoritesActivity extends AppCompatActivity implements MovieListAda
 
     @Override
     public void onClick(Movie movie) {
-        Intent detailActivityIntent = new Intent(this, DetailActivity.class);
-        detailActivityIntent.putExtra(DetailActivity.MOVIE_DATA_EXTRA, movie);
-        detailActivityIntent.setAction(DetailActivity.FAVORITES_ACTIVITY_PARENT);
+        Intent detailActivityIntent = new Intent(this, DetailsActivity.class);
+        detailActivityIntent.putExtra(DetailsActivity.MOVIE_DATA_EXTRA, movie);
+        detailActivityIntent.setAction(DetailsActivity.FAVORITES_ACTIVITY_PARENT);
         startActivity(detailActivityIntent);
     }
 }
