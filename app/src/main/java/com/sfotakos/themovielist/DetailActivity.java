@@ -52,7 +52,7 @@ public class DetailActivity extends AppCompatActivity {
             if (intent.hasExtra(MOVIE_DATA_EXTRA)) {
                 mMovie = intent.getParcelableExtra(MOVIE_DATA_EXTRA);
 
-                //TODO [2] Date object and proper DateFormatter parsing
+                //TODO Date object and proper DateFormatter parsing
                 String releaseDate = mMovie.getReleaseDate();
                 String formattedReleaseDate = null;
                 if (releaseDate != null && !releaseDate.isEmpty()) {

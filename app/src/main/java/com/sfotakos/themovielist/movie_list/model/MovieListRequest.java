@@ -37,7 +37,6 @@ public class MovieListRequest {
     // Temporarily fixed language
     private static final String LANGUAGE = "en-US";
 
-    //TODO [X] Add more parameters
     public enum SortTypes {
         POPULARITY("popularity"),
         RELEASE_DATE("release_date"),

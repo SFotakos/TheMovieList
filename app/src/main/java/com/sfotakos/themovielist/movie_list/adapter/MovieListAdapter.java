@@ -65,8 +65,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
         MovieViewHolder(View itemView) {
             super(itemView);
 
-            //TODO [Question] Why is this redundant? Shouldn't it be casting to View?
-            mMoviePoster = (ImageView) itemView.findViewById(R.id.iv_movie_poster);
+            mMoviePoster = itemView.findViewById(R.id.iv_movie_poster);
 
             itemView.setOnClickListener(this);
         }

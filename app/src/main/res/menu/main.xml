@@ -3,16 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/action_sort"
+        app:showAsAction="always"
+        android:title="@string/action_sortByPopularity"
+        android:orderInCategory="1"/>
+
+    <item
         android:id="@+id/action_favorites"
         app:showAsAction="always"
         android:title="@string/action_favorites"
         android:icon="@drawable/ic_favorite_white"
-        android:orderInCategory="1"/>
-
-    <item
-        android:id="@+id/action_sort"
-        app:showAsAction="always"
-        android:title="@string/action_sortByPopularity"
         android:orderInCategory="2"/>
 
     <item

@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
 
-//TODO implement on restore state to keep the scroll as it was.
 public class MainActivity extends AppCompatActivity implements MovieListAdapter.MovieItemClickListener {
 
     public static final String SCROLL_STATE_KEY = "scroll-state";
