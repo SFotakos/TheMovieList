@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
@@ -20,7 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.sfotakos.themovielist.movie_details.DetailActivity;
+import com.sfotakos.themovielist.movie_details.DetailsActivity;
 import com.sfotakos.themovielist.FavoritesActivity;
 import com.sfotakos.themovielist.general.model.Movie;
 import com.sfotakos.themovielist.movie_list.adapter.MarginItemDecoration;
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
     public static final String SCROLL_STATE_KEY = "scroll-state";
 
-    private static final int GRID_COLUMNS = 2;
+    private static final int DEFAULT_GRID_COLUMNS = 2;
     private static final int DEFAULT_PAGE = 1;
 
     private boolean isSortingByPopularity = true;
@@ -50,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
     private Parcelable scrollState;
     private ConnectivityReceiver connectivityReceiver;
+
+    private int gridColumns = DEFAULT_GRID_COLUMNS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,17 +68,32 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
         mAdapter = new MovieListAdapter(this);
 
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, GRID_COLUMNS);
-
-        mBinding.rvMovies.setLayoutManager(layoutManager);
-
         // Margins for item decorator
         int marginInPixels = getResources().getDimensionPixelSize(R.dimen.movie_item_margin);
-        mBinding.rvMovies.addItemDecoration(new MarginItemDecoration(marginInPixels, GRID_COLUMNS));
+        setGridColumns();
 
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, gridColumns);
+        mBinding.rvMovies.setLayoutManager(layoutManager);
+
+        mBinding.rvMovies.addItemDecoration(new MarginItemDecoration(marginInPixels, gridColumns));
         mBinding.rvMovies.setAdapter(mAdapter);
 
         fetchMovies();
+    }
+
+    private void setGridColumns() {
+        int orientation = getResources().getConfiguration().orientation;
+        switch (orientation) {
+            case Configuration.ORIENTATION_PORTRAIT:
+                gridColumns = 2;
+                break;
+            case Configuration.ORIENTATION_LANDSCAPE:
+                gridColumns = 3;
+                break;
+            default:
+                gridColumns = DEFAULT_GRID_COLUMNS;
+                break;
+        }
     }
 
     private void showMovieList() {
@@ -124,9 +142,9 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
                 return true;
 
             case R.id.action_favorites:
-                Intent detailActivityIntent =
+                Intent favoritesActivityIntent =
                         new Intent(this, FavoritesActivity.class);
-                startActivity(detailActivityIntent);
+                startActivity(favoritesActivityIntent);
 
                 return true;
 
@@ -151,10 +169,10 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
     @Override
     public void onClick(Movie movie) {
-        Intent detailActivityIntent = new Intent(this, DetailActivity.class);
-        detailActivityIntent.putExtra(DetailActivity.MOVIE_DATA_EXTRA, movie);
-        detailActivityIntent.setAction(DetailActivity.MAIN_ACTIVITY_PARENT);
-        startActivity(detailActivityIntent);
+        Intent detailsActivityIntent = new Intent(this, DetailsActivity.class);
+        detailsActivityIntent.putExtra(DetailsActivity.MOVIE_DATA_EXTRA, movie);
+        detailsActivityIntent.setAction(DetailsActivity.MAIN_ACTIVITY_PARENT);
+        startActivity(detailsActivityIntent);
     }
 
     @Override
@@ -193,13 +211,13 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         registerReceiver(connectivityReceiver, filter);
     }
 
-    private void persistScrollState(){
+    private void persistScrollState() {
         RecyclerView.LayoutManager layoutManager = mBinding.rvMovies.getLayoutManager();
         scrollState = layoutManager.onSaveInstanceState();
     }
 
-    private void restoreScrollState(){
-        if (scrollState != null){
+    private void restoreScrollState() {
+        if (scrollState != null) {
             RecyclerView.LayoutManager layoutManager = mBinding.rvMovies.getLayoutManager();
             layoutManager.onRestoreInstanceState(scrollState);
         }

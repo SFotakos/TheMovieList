@@ -7,6 +7,10 @@
     <string name="action_add_favorite">Add to favorite</string>
     <string name="action_favorites">Favorites</string>
 
+    <string name="nav_view_details">Details</string>
+    <string name="nav_view_reviews">Reviews</string>
+    <string name="nav_view_trailers">Trailers</string>
+
     <string name="error_default">Something went wrong</string>
     <string name="error_no_connectivity">You\'re offline data might not load correctly.</string>
 
@@ -21,6 +25,8 @@
     <string name="trailers">Trailers</string>
     <string name="reviews">Reviews</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

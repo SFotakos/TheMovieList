@@ -1,0 +1,69 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.sfotakos.themovielist.movie_details.DetailsActivity">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/iv_movie_poster"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/movie_frame"
+            android:contentDescription="@string/accessibility_movie_poster"
+            android:cropToPadding="true"
+            android:padding="4dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/pb_movie_average_score"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="48dp"
+            android:layout_marginLeft="48dp"
+            android:layout_marginRight="48dp"
+            android:layout_marginStart="48dp"
+            android:gravity="center"
+            android:max="100"
+            android:progress="0"
+            android:progressDrawable="@drawable/horizontal_average_score"
+            app:layout_constraintLeft_toRightOf="@+id/iv_movie_poster"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/iv_movie_poster" />
+
+        <TextView
+            android:id="@+id/tv_movie_average_score"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="18dp"
+            app:layout_constraintBottom_toBottomOf="@+id/pb_movie_average_score"
+            app:layout_constraintLeft_toLeftOf="@+id/pb_movie_average_score"
+            app:layout_constraintRight_toRightOf="@id/pb_movie_average_score"
+            app:layout_constraintTop_toTopOf="@+id/pb_movie_average_score"
+            tools:ignore="SpUsage" />
+
+        <TextView
+            android:id="@+id/tv_movie_synopsis"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintWidth_default="wrap"
+            android:gravity="top|start"
+            android:layout_margin="8dp"
+            android:scrollbars="vertical"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/iv_movie_poster"
+            app:layout_constraintTop_toBottomOf="@+id/pb_movie_average_score" />
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

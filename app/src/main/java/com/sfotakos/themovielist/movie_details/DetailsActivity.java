@@ -8,7 +8,11 @@ import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,6 +31,7 @@ import com.sfotakos.themovielist.general.NetworkUtils;
 import com.sfotakos.themovielist.general.data.MovieListContract.FavoriteMovieEntry;
 import com.sfotakos.themovielist.general.model.Movie;
 import com.sfotakos.themovielist.databinding.ActivityDetailBinding;
+import com.sfotakos.themovielist.movie_details.adapter.ReviewsAdapter;
 import com.sfotakos.themovielist.movie_details.model.MovieReviewRequest;
 import com.sfotakos.themovielist.movie_details.model.MovieReviewResponse;
 import com.sfotakos.themovielist.movie_list.MainActivity;
@@ -38,19 +43,17 @@ import java.net.URL;
 import java.security.InvalidParameterException;
 
 @SuppressWarnings("FieldCanBeLocal")
-public class DetailActivity extends AppCompatActivity {
+public class DetailsActivity extends AppCompatActivity {
 
     public static final String MOVIE_DATA_EXTRA = "movie-data";
     public static final String MAIN_ACTIVITY_PARENT = "main-activity";
     public static final String FAVORITES_ACTIVITY_PARENT = "favorites-activity";
 
-    private static final int DEFAULT_PAGE = 1;
-
-    private Movie mMovie;
+    private Movie mMovie = null;
 
     private ActivityDetailBinding mBinding;
 
-    private ReviewsAdapter reviewsAdapter = new ReviewsAdapter();
+
 
     private boolean mFavorited = false;
 
@@ -61,15 +64,13 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_detail);
 
-        mBinding.tvMovieSynopsis.setMovementMethod(new ScrollingMovementMethod());
-
         ActionBar actionBar = getSupportActionBar();
 
         Intent intent = getIntent();
         if (intent != null) {
             if (intent.hasExtra(MOVIE_DATA_EXTRA)) {
                 mMovie = intent.getParcelableExtra(MOVIE_DATA_EXTRA);
-                if (mMovie == null){
+                if (mMovie == null) {
                     throw new RuntimeException("Movie data was not recovered properly");
                 }
 
@@ -87,31 +88,50 @@ public class DetailActivity extends AppCompatActivity {
                     actionBar.setSubtitle(formattedReleaseDate);
                 }
 
-                Picasso.with(this)
-                        .load(mMovie.getPosterPath())
-                        .placeholder(R.drawable.ic_movie_clapboard)
-                        .into(mBinding.ivMoviePoster);
 
-                Double voteAvg = mMovie.getVoteAverage() * 10;
-                mBinding.pbMovieAverageScore.setProgress(voteAvg.intValue());
 
-                String avgScore = String.valueOf(voteAvg.intValue()) + " / 100";
-                mBinding.tvMovieAverageScore.setText(avgScore);
-
-                mBinding.tvMovieSynopsis.setText(String.valueOf(mMovie.getOverview()));
-
-                LinearLayoutManager reviewsLayoutManager =
-                        new LinearLayoutManager(this,
-                                LinearLayoutManager.HORIZONTAL, false);
-                mBinding.reviews.rvReviews.setLayoutManager(reviewsLayoutManager);
-                mBinding.reviews.rvReviews.setAdapter(reviewsAdapter);
-
-                SnapHelper snapHelper = new LinearSnapHelper();
-                snapHelper.attachToRecyclerView(mBinding.reviews.rvReviews);
-
-                fetchReviews();
+//                fetchReviews();
             }
         }
+
+        if (mMovie == null) {
+            throw new RuntimeException("Movie data was not recovered properly");
+        }
+
+        mBinding.bottomNavigation.setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        Fragment fragment;
+                        switch (item.getItemId()) {
+                            case R.id.nav_details:
+                                fragment = DetailsFragment.newInstance(mMovie);
+                                break;
+
+                            case R.id.nav_reviews:
+                                fragment = ReviewsFragment.newInstance(mMovie.getId());
+                                break;
+
+                            case R.id.nav_trailers:
+                                fragment = DetailsFragment.newInstance(mMovie);
+                                break;
+
+                            default:
+                                throw new InvalidParameterException("Unknown navigation action");
+                        }
+
+                        try {
+                            FragmentManager fragmentManager = getSupportFragmentManager();
+                            fragmentManager.beginTransaction()
+                                    .replace(R.id.fragment_container_fl, fragment).commit();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        return true;
+                    }
+                });
+        mBinding.bottomNavigation.setSelectedItemId(R.id.nav_details);
     }
 
     private void updateFavoritedIcon(MenuItem item) {
@@ -145,21 +165,13 @@ public class DetailActivity extends AppCompatActivity {
         //mBinding.tvErrorMessage.setVisibility(View.VISIBLE);
     }
 
-    private void fetchReviews() {
-        if (NetworkUtils.hasConnection(this)) {
-            MovieReviewRequest movieReviewRequest =
-                    new MovieReviewRequest(mMovie.getId(), DEFAULT_PAGE);
 
-            new FetchReviews().execute(movieReviewRequest);
-        } else {
-            showErrorMessage(getResources().getString(R.string.error_no_connectivity));
-        }
-    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.detail, menu);
+        menuInflater.inflate(R.menu.detail_toolbar, menu);
 
         isFavorite();
 
@@ -189,7 +201,6 @@ public class DetailActivity extends AppCompatActivity {
                             .insert(FavoriteMovieEntry.CONTENT_URI, contentValues);
 
                     if (uri != null) {
-                        Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
                         mFavorited = true;
                     }
                 } else {
@@ -197,7 +208,6 @@ public class DetailActivity extends AppCompatActivity {
                             .appendPath(String.valueOf(mMovie.getId())).build();
                     int deleted = getContentResolver().delete(uriToDelete, null, null);
                     if (deleted > 0) {
-                        Toast.makeText(getBaseContext(), String.valueOf(deleted), Toast.LENGTH_LONG).show();
                         mFavorited = false;
                     }
                 }
@@ -245,41 +255,6 @@ public class DetailActivity extends AppCompatActivity {
         return navigationIntent;
     }
 
-    private class FetchReviews extends AsyncTask<MovieReviewRequest, Void, MovieReviewResponse> {
-
-        @Override
-        protected void onPreExecute() {
-            //mBinding.tvErrorMessage.setVisibility(View.GONE);
-            //mBinding.pbLoadingIndicator.setVisibility(View.VISIBLE);
-            super.onPreExecute();
-        }
-
-        @Override
-        protected MovieReviewResponse doInBackground(MovieReviewRequest... movieListRequests) {
-
-            MovieReviewRequest movieListRequest = movieListRequests[0];
-            URL requestURL = movieListRequest.buildMovieReviewsRequest();
-
-            try {
-                String jsonResponse = NetworkUtils.getResponseFromHttpUrl(requestURL);
-                return new MovieReviewResponse(jsonResponse);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(MovieReviewResponse movieReviewResponse) {
-            //mBinding.pbLoadingIndicator.setVisibility(View.INVISIBLE);
-            if (movieReviewResponse != null) {
-                //showMovieList();
-                reviewsAdapter.setReviewList(movieReviewResponse.getReviewList());
-            } else {
-                showErrorMessage(getResources().getString(R.string.error_default));
-            }
-        }
-    }
 
     // Deal with connectivity changes
     private class ConnectivityReceiver extends BroadcastReceiver implements Serializable {
@@ -287,7 +262,7 @@ public class DetailActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
 
             if (NetworkUtils.hasConnection(context)) {
-                fetchReviews();
+
             } else {
                 showErrorMessage(getResources().getString(R.string.error_no_connectivity));
             }
