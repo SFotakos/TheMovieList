@@ -83,12 +83,12 @@ public class FavoritesActivity extends AppCompatActivity implements MovieListAda
             cursor.close();
         }
     }
-
-
+    
     @Override
     public void onClick(Movie movie) {
         Intent detailActivityIntent = new Intent(this, DetailActivity.class);
         detailActivityIntent.putExtra(DetailActivity.MOVIE_DATA_EXTRA, movie);
+        detailActivityIntent.setAction(DetailActivity.FAVORITES_ACTIVITY_PARENT);
         startActivity(detailActivityIntent);
     }
 }

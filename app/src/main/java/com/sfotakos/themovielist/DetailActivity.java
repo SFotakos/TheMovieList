@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,12 +18,17 @@ import android.widget.Toast;
 import com.sfotakos.themovielist.general.data.MovieListContract.FavoriteMovieEntry;
 import com.sfotakos.themovielist.general.model.Movie;
 import com.sfotakos.themovielist.databinding.ActivityDetailBinding;
+import com.sfotakos.themovielist.movie_list.MainActivity;
 import com.squareup.picasso.Picasso;
+
+import java.security.InvalidParameterException;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class DetailActivity extends AppCompatActivity {
 
     public static final String MOVIE_DATA_EXTRA = "movie-data";
+    public static final String MAIN_ACTIVITY_PARENT = "main-activity";
+    public static final String FAVORITES_ACTIVITY_PARENT = "favorites-activity";
 
     private Movie mMovie;
 
@@ -96,7 +102,7 @@ public class DetailActivity extends AppCompatActivity {
         return true;
     }
 
-    private void isFavorite(){
+    private void isFavorite() {
 
         Uri uriToQuery = FavoriteMovieEntry.CONTENT_URI.buildUpon()
                 .appendPath(String.valueOf(mMovie.getId())).build();
@@ -142,7 +148,7 @@ public class DetailActivity extends AppCompatActivity {
                     Uri uriToDelete = FavoriteMovieEntry.CONTENT_URI.buildUpon()
                             .appendPath(String.valueOf(mMovie.getId())).build();
                     int deleted = getContentResolver().delete(uriToDelete, null, null);
-                    if (deleted > 0){
+                    if (deleted > 0) {
                         Toast.makeText(getBaseContext(), String.valueOf(deleted), Toast.LENGTH_LONG).show();
                         mFavorited = false;
                     }
@@ -157,4 +163,37 @@ public class DetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Nullable
+    @Override
+    public Intent getSupportParentActivityIntent() {
+        return this.getNavigationUpIntent();
+    }
+
+    @Nullable
+    @Override
+    public Intent getParentActivityIntent() {
+        return this.getNavigationUpIntent();
+    }
+
+    private Intent getNavigationUpIntent() {
+        Intent navigationIntent = null;
+
+        String action = getIntent().getAction();
+        if (action != null) {
+            switch (action) {
+                case MAIN_ACTIVITY_PARENT:
+                    navigationIntent = new Intent(this, MainActivity.class);
+                    navigationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    break;
+                case FAVORITES_ACTIVITY_PARENT:
+                    navigationIntent = new Intent(this, FavoritesActivity.class);
+                    navigationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    break;
+
+                default:
+                    throw new InvalidParameterException("Unknown parent activity");
+            }
+        }
+        return navigationIntent;
+    }
 }

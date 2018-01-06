@@ -154,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
     public void onClick(Movie movie) {
         Intent detailActivityIntent = new Intent(this, DetailActivity.class);
         detailActivityIntent.putExtra(DetailActivity.MOVIE_DATA_EXTRA, movie);
+        detailActivityIntent.setAction(DetailActivity.MAIN_ACTIVITY_PARENT);
         startActivity(detailActivityIntent);
     }
 
