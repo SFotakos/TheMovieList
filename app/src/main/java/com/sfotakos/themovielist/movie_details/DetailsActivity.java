@@ -34,7 +34,7 @@ import java.security.InvalidParameterException;
 @SuppressWarnings("FieldCanBeLocal")
 public class DetailsActivity extends AppCompatActivity
         implements ConnectivityReceiver.IConnectivityChange,
-        IErrorMessages{
+        IErrorMessages {
 
     public static final String MOVIE_DATA_EXTRA = "movie-data";
     public static final String MAIN_ACTIVITY_PARENT = "main-activity";
@@ -119,7 +119,11 @@ public class DetailsActivity extends AppCompatActivity
                         return true;
                     }
                 });
-        mBinding.bottomNavigation.setSelectedItemId(R.id.nav_details);
+
+        // Inflate the first fragment on a fresh creation and doesn't interfere with BottomNavView automatic persistence.
+        if (savedInstanceState == null) {
+            mBinding.bottomNavigation.setSelectedItemId(R.id.nav_details);
+        }
     }
 
     @Override
@@ -234,7 +238,7 @@ public class DetailsActivity extends AppCompatActivity
             if (currentFragment != null && currentFragment.isVisible()) {
                 if (currentFragment instanceof ReviewsFragment) {
                     ((ReviewsFragment) currentFragment).fetchReviews();
-                } else if (currentFragment instanceof TrailersFragment){
+                } else if (currentFragment instanceof TrailersFragment) {
                     ((TrailersFragment) currentFragment).fetchTrailers();
                 }
             }

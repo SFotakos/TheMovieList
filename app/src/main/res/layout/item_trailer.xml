@@ -9,7 +9,7 @@
     android:drawableLeft="@drawable/ic_movie_clapboard"
     android:drawableStart="@drawable/ic_movie_clapboard"
     android:focusable="true"
+    android:gravity="center_vertical|start"
     android:foreground="?android:attr/selectableItemBackground"
-    android:gravity="start|center_vertical"
     android:textColor="@color/light_gray"
     android:textSize="18sp" />

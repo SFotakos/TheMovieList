@@ -1,6 +1,5 @@
 package com.sfotakos.themovielist.movie_details.model;
 
-import com.sfotakos.themovielist.general.model.Review;
 import com.sfotakos.themovielist.general.model.Trailer;
 
 import org.json.JSONArray;
