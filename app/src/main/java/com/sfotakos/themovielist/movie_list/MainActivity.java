@@ -200,7 +200,6 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-
     private void setGridColumns() {
         int orientation = getResources().getConfiguration().orientation;
         switch (orientation) {

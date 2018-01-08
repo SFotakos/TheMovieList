@@ -1,11 +1,14 @@
 package com.sfotakos.themovielist.movie_details;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,10 +70,7 @@ public class ReviewsFragment extends Fragment {
                 inflater.inflate(R.layout.fragment_reviews, container, false);
         mBinding = DataBindingUtil.bind(fragmentView);
 
-        LinearLayoutManager reviewsLayoutManager =
-                new LinearLayoutManager(getContext(),
-                        LinearLayoutManager.VERTICAL, false);
-        mBinding.rvReviews.setLayoutManager(reviewsLayoutManager);
+        mBinding.rvReviews.setLayoutManager(getLayoutManager());
         mBinding.rvReviews.setAdapter(reviewsAdapter);
 
         fetchReviews();
@@ -95,6 +95,20 @@ public class ReviewsFragment extends Fragment {
         mListener = null;
     }
 
+    private RecyclerView.LayoutManager getLayoutManager() {
+        RecyclerView.LayoutManager layoutManager;
+        int orientation = getResources().getConfiguration().orientation;
+        switch (orientation) {
+//            case Configuration.ORIENTATION_LANDSCAPE:
+//                layoutManager = new GridLayoutManager(getContext(), 2);
+//                break;
+            default:
+                layoutManager = new LinearLayoutManager(getContext(),
+                        LinearLayoutManager.VERTICAL, false);
+                break;
+        }
+        return layoutManager;
+    }
 
     public void fetchReviews() {
         if (NetworkUtils.hasConnection(getContext())) {

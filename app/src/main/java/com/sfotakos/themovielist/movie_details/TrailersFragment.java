@@ -2,12 +2,15 @@ package com.sfotakos.themovielist.movie_details;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,10 +71,7 @@ public class TrailersFragment extends Fragment implements TrailersAdapter.Traile
                 inflater.inflate(R.layout.fragment_trailers, container, false);
         mBinding = DataBindingUtil.bind(fragmentView);
 
-        LinearLayoutManager trailersLayoutManager =
-                new LinearLayoutManager(getContext(),
-                        LinearLayoutManager.VERTICAL, false);
-        mBinding.rvTrailers.setLayoutManager(trailersLayoutManager);
+        mBinding.rvTrailers.setLayoutManager(getLayoutManager());
         mBinding.rvTrailers.setAdapter(trailersAdapter);
 
         fetchTrailers();
@@ -101,6 +101,21 @@ public class TrailersFragment extends Fragment implements TrailersAdapter.Traile
         Intent trailerIntent = new Intent(Intent.ACTION_VIEW);
         trailerIntent.setData(NetworkUtils.buildYoutubeUri(trailer.getKey()));
         startActivity(trailerIntent);
+    }
+
+    private RecyclerView.LayoutManager getLayoutManager() {
+        RecyclerView.LayoutManager layoutManager;
+        int orientation = getResources().getConfiguration().orientation;
+        switch (orientation) {
+//            case Configuration.ORIENTATION_LANDSCAPE:
+//                layoutManager = new GridLayoutManager(getContext(), 2);
+//                break;
+            default:
+                layoutManager = new LinearLayoutManager(getContext(),
+                        LinearLayoutManager.VERTICAL, false);
+                break;
+        }
+        return layoutManager;
     }
 
     public void fetchTrailers() {

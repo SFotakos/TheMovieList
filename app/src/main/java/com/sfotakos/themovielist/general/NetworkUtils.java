@@ -60,7 +60,6 @@ public class NetworkUtils {
     public static Uri buildYoutubeUri(String videoId){
         return Uri.parse(NetworkUtils.BASE_YOUTUBE_URL).buildUpon()
                 .appendPath(YOUTUBE_WATCH_PARAM)
-                .appendQueryParameter(NetworkUtils.TMDB_API_KEY_PARAM, NetworkUtils.TMDB_API_KEY)
                 .appendQueryParameter(YOUTUBE_VIDEO_ID_PARAM, videoId)
                 .build();
     }
