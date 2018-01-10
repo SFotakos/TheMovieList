@@ -24,5 +24,6 @@
 
     <string name="no_reviews">Sadly this movie has no reviews yet.</string>
     <string name="no_trailers">Sadly this movie has no trailers.</string>
+    <string name="no_favorites">You haven\'t added any movie to your favorite list yet.\nBe sure to press the favorite button while checking your favorite movie details!</string>
 
 </resources>

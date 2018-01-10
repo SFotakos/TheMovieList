@@ -1,6 +1,7 @@
 package com.sfotakos.themovielist;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.support.v7.app.ActionBar;
@@ -8,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 
 import com.sfotakos.themovielist.general.model.Movie;
@@ -22,11 +24,13 @@ import java.util.List;
 
 public class FavoritesActivity extends AppCompatActivity implements MovieListAdapter.MovieItemClickListener {
 
-    private static final int GRID_COLUMNS = 2;
+    private static final int DEFAULT_GRID_COLUMNS = 2;
 
     private ActivityFavoritesBinding mBinding;
 
     private MovieListAdapter mAdapter;
+
+    private int gridColumns = DEFAULT_GRID_COLUMNS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,17 +44,36 @@ public class FavoritesActivity extends AppCompatActivity implements MovieListAda
         }
 
         mAdapter = new MovieListAdapter(this);
-
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, GRID_COLUMNS);
-
-        mBinding.rvFavorites.setLayoutManager(layoutManager);
+        mBinding.rvFavorites.setAdapter(mAdapter);
 
         // Margins for item decorator
         int marginInPixels = getResources().getDimensionPixelSize(R.dimen.movie_item_margin);
-        mBinding.rvFavorites.addItemDecoration(new MarginItemDecoration(marginInPixels, GRID_COLUMNS));
+        setGridColumns();
 
-        mBinding.rvFavorites.setAdapter(mAdapter);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, gridColumns);
+        mBinding.rvFavorites.setLayoutManager(layoutManager);
+        mBinding.rvFavorites.addItemDecoration(new MarginItemDecoration(marginInPixels, gridColumns));
+    }
 
+    @Override
+    public void onClick(Movie movie) {
+        Intent detailActivityIntent = new Intent(this, DetailsActivity.class);
+        detailActivityIntent.putExtra(DetailsActivity.MOVIE_DATA_EXTRA, movie);
+        detailActivityIntent.setAction(DetailsActivity.FAVORITES_ACTIVITY_PARENT);
+        startActivity(detailActivityIntent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        List<Movie> movieList = queryFavorites();
+        mBinding.tvNoFavorites.setVisibility(
+                (movieList == null || movieList.size() == 0) ? View.VISIBLE : View.INVISIBLE);
+        mAdapter.setMovieList(movieList);
+    }
+
+    private List<Movie> queryFavorites() {
+        List<Movie> movieList = new ArrayList<>();
         Cursor cursor = getContentResolver().query(
                 FavoriteMovieEntry.CONTENT_URI,
                 null,
@@ -59,7 +82,6 @@ public class FavoritesActivity extends AppCompatActivity implements MovieListAda
                 null);
 
         if (cursor != null) {
-            List<Movie> movieList = new ArrayList<>();
             while (cursor.moveToNext()) {
                 Movie movie = new Movie();
                 int movieIdIndex = cursor.getColumnIndex(FavoriteMovieEntry.MOVIE_ID);
@@ -78,17 +100,23 @@ public class FavoritesActivity extends AppCompatActivity implements MovieListAda
 
                 movieList.add(movie);
             }
-
-            mAdapter.setMovieList(movieList);
             cursor.close();
         }
+        return movieList;
     }
 
-    @Override
-    public void onClick(Movie movie) {
-        Intent detailActivityIntent = new Intent(this, DetailsActivity.class);
-        detailActivityIntent.putExtra(DetailsActivity.MOVIE_DATA_EXTRA, movie);
-        detailActivityIntent.setAction(DetailsActivity.FAVORITES_ACTIVITY_PARENT);
-        startActivity(detailActivityIntent);
+    private void setGridColumns() {
+        int orientation = getResources().getConfiguration().orientation;
+        switch (orientation) {
+            case Configuration.ORIENTATION_PORTRAIT:
+                gridColumns = 2;
+                break;
+            case Configuration.ORIENTATION_LANDSCAPE:
+                gridColumns = 3;
+                break;
+            default:
+                gridColumns = DEFAULT_GRID_COLUMNS;
+                break;
+        }
     }
 }

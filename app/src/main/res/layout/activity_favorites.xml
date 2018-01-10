@@ -11,7 +11,26 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_favorites"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/tv_no_favorites"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:shadowColor="@android:color/white"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="1"
+            android:text="@string/no_favorites"
+            android:textColor="@color/light_gray"
+            android:textSize="20sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_default="spread" />
 
     </android.support.constraint.ConstraintLayout>
 </layout>
