@@ -22,7 +22,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".movie_details.DetailsActivity">
+        <activity android:name=".movie_details.DetailsActivity"
+            android:theme="@style/NoToolbarActivityTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.sfotakos.themovielist.movie_list.MainActivity" />

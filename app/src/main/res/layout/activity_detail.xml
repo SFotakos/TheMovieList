@@ -4,48 +4,65 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.sfotakos.themovielist.movie_details.DetailsActivity">
 
-    <android.support.constraint.ConstraintLayout
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/tv_error_message"
+        <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@color/colorRedFourHundred"
-            android:gravity="center"
-            android:padding="4dp"
-            android:text="@string/error_default"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:visibility="gone"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <FrameLayout
-            android:id="@+id/fragment_container_fl"
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:layout_scrollFlags="enterAlways"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tl_details_tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_error_message"
-            app:menu="@menu/detail_navigation_view" />
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.design.widget.BottomNavigationView
-            android:id="@+id/bottom_navigation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            app:itemBackground="@color/colorPrimary"
-            app:itemIconTint="@drawable/nav_selected"
-            app:itemTextColor="@drawable/nav_selected"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:menu="@menu/detail_navigation_view" />
+            <TextView
+                android:id="@+id/tv_error_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@color/colorRedFourHundred"
+                android:gravity="center"
+                android:padding="4dp"
+                android:text="@string/error_default"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:visibility="gone"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    </android.support.constraint.ConstraintLayout>
+            <FrameLayout
+                android:id="@+id/fragment_container_fl"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/vp_details_tabs"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_error_message"
+                app:menu="@menu/detail_navigation_view" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/vp_details_tabs"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </android.support.constraint.ConstraintLayout>
+    </android.support.design.widget.CoordinatorLayout>
 </layout>

@@ -9,8 +9,10 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,6 +29,7 @@ import com.sfotakos.themovielist.general.NetworkUtils;
 import com.sfotakos.themovielist.general.data.MovieListContract.FavoriteMovieEntry;
 import com.sfotakos.themovielist.general.model.Movie;
 import com.sfotakos.themovielist.databinding.ActivityDetailBinding;
+import com.sfotakos.themovielist.movie_details.adapter.DetailsPageAdapter;
 import com.sfotakos.themovielist.movie_list.MainActivity;
 
 import java.security.InvalidParameterException;
@@ -54,6 +57,7 @@ public class DetailsActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_detail);
 
+        setSupportActionBar(mBinding.toolbar);
         ActionBar actionBar = getSupportActionBar();
 
         Intent intent = getIntent();
@@ -84,46 +88,9 @@ public class DetailsActivity extends AppCompatActivity
             throw new RuntimeException("Movie data was not recovered properly");
         }
 
-        mBinding.bottomNavigation.setOnNavigationItemSelectedListener(
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        showErrorMessage(null);
-
-                        Fragment fragment;
-                        switch (item.getItemId()) {
-                            case R.id.nav_details:
-                                fragment = DetailsFragment.newInstance(mMovie);
-                                break;
-
-                            case R.id.nav_reviews:
-                                fragment = ReviewsFragment.newInstance(mMovie.getId());
-                                break;
-
-                            case R.id.nav_trailers:
-                                fragment = TrailersFragment.newInstance(mMovie.getId());
-                                break;
-
-                            default:
-                                throw new InvalidParameterException("Unknown navigation action");
-                        }
-
-                        try {
-                            FragmentManager fragmentManager = getSupportFragmentManager();
-                            fragmentManager.beginTransaction()
-                                    .replace(R.id.fragment_container_fl,
-                                            fragment, CURRENT_FRAGMENT_TAG).commit();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        return true;
-                    }
-                });
-
-        // Inflate the first fragment on a fresh creation and doesn't interfere with BottomNavView automatic persistence.
-        if (savedInstanceState == null) {
-            mBinding.bottomNavigation.setSelectedItemId(R.id.nav_details);
-        }
+        setupViewPager(mBinding.vpDetailsTabs);
+        mBinding.tlDetailsTabs.setupWithViewPager(mBinding.vpDetailsTabs);
+        mBinding.tlDetailsTabs.setTabGravity(TabLayout.GRAVITY_FILL);
     }
 
     @Override
@@ -202,6 +169,12 @@ public class DetailsActivity extends AppCompatActivity
         return this.getNavigationUpIntent();
     }
 
+    @Override
+    public void showErrorMessage(@Nullable String errorMessage) {
+        mBinding.tvErrorMessage.setText(errorMessage);
+        mBinding.tvErrorMessage.setVisibility(errorMessage == null ? View.GONE : View.VISIBLE);
+    }
+
     private Intent getNavigationUpIntent() {
         Intent navigationIntent = null;
 
@@ -225,12 +198,6 @@ public class DetailsActivity extends AppCompatActivity
     }
 
     @Override
-    public void showErrorMessage(@Nullable String errorMessage) {
-        mBinding.tvErrorMessage.setText(errorMessage);
-        mBinding.tvErrorMessage.setVisibility(errorMessage == null ? View.GONE : View.VISIBLE);
-    }
-
-    @Override
     public void connectivityChanged() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment currentFragment = fragmentManager.findFragmentByTag(CURRENT_FRAGMENT_TAG);
@@ -243,6 +210,17 @@ public class DetailsActivity extends AppCompatActivity
                 }
             }
         }
+    }
+
+    private void setupViewPager(ViewPager vpDetailsTabs) {
+        DetailsPageAdapter detailsPageAdapter = new DetailsPageAdapter(getSupportFragmentManager());
+        detailsPageAdapter.addFrag(DetailsFragment.newInstance(mMovie),
+                getResources().getString(R.string.nav_view_details));
+        detailsPageAdapter.addFrag(ReviewsFragment.newInstance(mMovie.getId()),
+                getResources().getString(R.string.nav_view_reviews));
+        detailsPageAdapter.addFrag(TrailersFragment.newInstance(mMovie.getId()),
+                getResources().getString(R.string.nav_view_trailers));
+        vpDetailsTabs.setAdapter(detailsPageAdapter);
     }
 
     private void updateFavoritedIcon(MenuItem item) {

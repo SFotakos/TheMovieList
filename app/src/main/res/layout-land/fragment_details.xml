@@ -9,8 +9,8 @@
 
         <ImageView
             android:id="@+id/iv_movie_poster"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
             android:layout_margin="8dp"
             android:adjustViewBounds="true"
             android:background="@drawable/movie_frame"
@@ -18,9 +18,10 @@
             android:cropToPadding="true"
             android:padding="4dp"
             android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHeight_default="spread"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ProgressBar
             android:id="@+id/pb_movie_average_score"
@@ -56,15 +57,15 @@
             android:id="@+id/tv_movie_synopsis"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintWidth_default="wrap"
-            android:gravity="top|start"
             android:layout_margin="8dp"
+            android:gravity="top|start"
             android:scrollbars="vertical"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/iv_movie_poster"
-            app:layout_constraintTop_toBottomOf="@+id/pb_movie_average_score" />
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pb_movie_average_score"
+            app:layout_constraintWidth_default="wrap" />
 
     </android.support.constraint.ConstraintLayout>
 </layout>
