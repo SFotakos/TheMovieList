@@ -53,9 +53,10 @@
             app:layout_constraintTop_toTopOf="@+id/pb_movie_average_score"
             tools:ignore="SpUsage" />
 
+        <!-- For some reason setting width to 0dp was making the text get clipped and I couldn't figure it out -->
         <TextView
             android:id="@+id/tv_movie_synopsis"
-            android:layout_width="0dp"
+            android:layout_width="400dp"
             android:layout_height="0dp"
             android:layout_margin="8dp"
             android:gravity="top|start"
@@ -64,8 +65,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/iv_movie_poster"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/pb_movie_average_score"
-            app:layout_constraintWidth_default="wrap" />
+            app:layout_constraintTop_toBottomOf="@+id/pb_movie_average_score" />
 
     </android.support.constraint.ConstraintLayout>
 </layout>

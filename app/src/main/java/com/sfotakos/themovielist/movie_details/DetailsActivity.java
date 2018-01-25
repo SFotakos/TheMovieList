@@ -43,14 +43,14 @@ public class DetailsActivity extends AppCompatActivity
     public static final String MAIN_ACTIVITY_PARENT = "main-activity";
     public static final String FAVORITES_ACTIVITY_PARENT = "favorites-activity";
 
-    public static final String CURRENT_FRAGMENT_TAG = "current-fragment";
-
     private ActivityDetailBinding mBinding;
 
     private boolean mFavorited = false;
 
     private Movie mMovie = null;
     private ConnectivityReceiver connectivityReceiver;
+
+    private DetailsPageAdapter detailsPageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +68,6 @@ public class DetailsActivity extends AppCompatActivity
                     throw new RuntimeException("Movie data was not recovered properly");
                 }
 
-                //TODO Date object and proper DateFormatter parsing
                 String releaseDate = mMovie.getReleaseDate();
                 String formattedReleaseDate = null;
                 if (releaseDate != null && !releaseDate.isEmpty()) {
@@ -199,21 +198,22 @@ public class DetailsActivity extends AppCompatActivity
 
     @Override
     public void connectivityChanged() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment currentFragment = fragmentManager.findFragmentByTag(CURRENT_FRAGMENT_TAG);
-        if (NetworkUtils.hasConnection(this)) {
-            if (currentFragment != null && currentFragment.isVisible()) {
-                if (currentFragment instanceof ReviewsFragment) {
-                    ((ReviewsFragment) currentFragment).fetchReviews();
-                } else if (currentFragment instanceof TrailersFragment) {
-                    ((TrailersFragment) currentFragment).fetchTrailers();
-                }
+        showErrorMessage(NetworkUtils.hasConnection(this) ? null :
+                getResources().getString(R.string.error_no_connectivity));
+        Fragment currentFragment
+                = detailsPageAdapter.getItem(mBinding.vpDetailsTabs.getCurrentItem());
+
+        if (currentFragment != null && currentFragment.isVisible()) {
+            if (currentFragment instanceof ReviewsFragment) {
+                ((ReviewsFragment) currentFragment).fetchReviews();
+            } else if (currentFragment instanceof TrailersFragment) {
+                ((TrailersFragment) currentFragment).fetchTrailers();
             }
         }
     }
 
     private void setupViewPager(ViewPager vpDetailsTabs) {
-        DetailsPageAdapter detailsPageAdapter = new DetailsPageAdapter(getSupportFragmentManager());
+        detailsPageAdapter = new DetailsPageAdapter(getSupportFragmentManager());
         detailsPageAdapter.addFrag(DetailsFragment.newInstance(mMovie),
                 getResources().getString(R.string.nav_view_details));
         detailsPageAdapter.addFrag(ReviewsFragment.newInstance(mMovie.getId()),

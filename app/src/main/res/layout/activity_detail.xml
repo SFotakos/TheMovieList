@@ -48,20 +48,13 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <FrameLayout
-                android:id="@+id/fragment_container_fl"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toTopOf="@+id/vp_details_tabs"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_error_message"
-                app:menu="@menu/detail_navigation_view" />
-
             <android.support.v4.view.ViewPager
                 android:id="@+id/vp_details_tabs"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="0dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_error_message"/>
 
         </android.support.constraint.ConstraintLayout>
     </android.support.design.widget.CoordinatorLayout>

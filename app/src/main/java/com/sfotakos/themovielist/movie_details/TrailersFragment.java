@@ -68,12 +68,20 @@ public class TrailersFragment extends Fragment implements TrailersAdapter.Traile
                 inflater.inflate(R.layout.fragment_trailers, container, false);
         mBinding = DataBindingUtil.bind(fragmentView);
 
-        mBinding.rvTrailers.setLayoutManager(getLayoutManager());
+        mBinding.rvTrailers.setLayoutManager(new LinearLayoutManager(getContext(),
+                LinearLayoutManager.VERTICAL, false));
         mBinding.rvTrailers.setAdapter(trailersAdapter);
 
-        fetchTrailers();
-
         return fragmentView;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (isVisibleToUser){
+            fetchTrailers();
+        }
     }
 
     @Override
@@ -100,29 +108,12 @@ public class TrailersFragment extends Fragment implements TrailersAdapter.Traile
         startActivity(trailerIntent);
     }
 
-    private RecyclerView.LayoutManager getLayoutManager() {
-        RecyclerView.LayoutManager layoutManager;
-        int orientation = getResources().getConfiguration().orientation;
-        switch (orientation) {
-//            case Configuration.ORIENTATION_LANDSCAPE:
-//                layoutManager = new GridLayoutManager(getContext(), 2);
-//                break;
-            default:
-                layoutManager = new LinearLayoutManager(getContext(),
-                        LinearLayoutManager.VERTICAL, false);
-                break;
-        }
-        return layoutManager;
-    }
-
     public void fetchTrailers() {
         if (NetworkUtils.hasConnection(getContext())) {
             MovieTrailerRequest movieReviewRequest =
                     new MovieTrailerRequest(mMovieId, DEFAULT_PAGE);
 
             new FetchTrailers().execute(movieReviewRequest);
-        } else {
-            mListener.showErrorMessage(getResources().getString(R.string.error_no_connectivity));
         }
     }
 

@@ -73,9 +73,16 @@ public class ReviewsFragment extends Fragment {
         mBinding.rvReviews.setLayoutManager(layoutManager);
         mBinding.rvReviews.setAdapter(reviewsAdapter);
 
-        fetchReviews();
-
         return fragmentView;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (isVisibleToUser){
+            fetchReviews();
+        }
     }
 
     @Override
@@ -101,8 +108,6 @@ public class ReviewsFragment extends Fragment {
                     new MovieReviewRequest(mMovieId, DEFAULT_PAGE);
 
             new FetchReviews().execute(movieReviewRequest);
-        } else {
-            mListener.showErrorMessage(getResources().getString(R.string.error_no_connectivity));
         }
     }
 
