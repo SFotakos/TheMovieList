@@ -39,6 +39,7 @@ public class TrailersFragment extends Fragment implements TrailersAdapter.Traile
 
     private IErrorMessages mListener;
 
+    private boolean hasFetchedTrailers = false;
 
     public TrailersFragment() {
         // Required empty public constructor
@@ -72,6 +73,8 @@ public class TrailersFragment extends Fragment implements TrailersAdapter.Traile
                 LinearLayoutManager.VERTICAL, false));
         mBinding.rvTrailers.setAdapter(trailersAdapter);
 
+        fetchTrailers();
+
         return fragmentView;
     }
 
@@ -79,7 +82,7 @@ public class TrailersFragment extends Fragment implements TrailersAdapter.Traile
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
 
-        if (isVisibleToUser){
+        if (isVisibleToUser && isResumed()){
             fetchTrailers();
         }
     }
@@ -109,7 +112,7 @@ public class TrailersFragment extends Fragment implements TrailersAdapter.Traile
     }
 
     public void fetchTrailers() {
-        if (NetworkUtils.hasConnection(getContext())) {
+        if (NetworkUtils.hasConnection(getContext()) && !hasFetchedTrailers) {
             MovieTrailerRequest movieReviewRequest =
                     new MovieTrailerRequest(mMovieId, DEFAULT_PAGE);
 
@@ -143,6 +146,7 @@ public class TrailersFragment extends Fragment implements TrailersAdapter.Traile
         @Override
         protected void onPostExecute(MovieTrailerResponse movieTrailerResponse) {
             if (movieTrailerResponse != null) {
+                hasFetchedTrailers = true;
 
                 if (mListener != null) {
                     mListener.showErrorMessage(null);

@@ -38,6 +38,7 @@ public class ReviewsFragment extends Fragment {
 
     private IErrorMessages mListener;
 
+    private boolean hasFetchedReviews = false;
 
     public ReviewsFragment() {
         // Required empty public constructor
@@ -73,6 +74,8 @@ public class ReviewsFragment extends Fragment {
         mBinding.rvReviews.setLayoutManager(layoutManager);
         mBinding.rvReviews.setAdapter(reviewsAdapter);
 
+        fetchReviews();
+
         return fragmentView;
     }
 
@@ -80,7 +83,7 @@ public class ReviewsFragment extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
 
-        if (isVisibleToUser){
+        if (isVisibleToUser && isResumed()){
             fetchReviews();
         }
     }
@@ -103,7 +106,7 @@ public class ReviewsFragment extends Fragment {
     }
 
     public void fetchReviews() {
-        if (NetworkUtils.hasConnection(getContext())) {
+        if (NetworkUtils.hasConnection(getContext()) && !hasFetchedReviews) {
             MovieReviewRequest movieReviewRequest =
                     new MovieReviewRequest(mMovieId, DEFAULT_PAGE);
 
@@ -137,6 +140,7 @@ public class ReviewsFragment extends Fragment {
         @Override
         protected void onPostExecute(MovieReviewResponse movieReviewResponse) {
             if (movieReviewResponse != null) {
+                hasFetchedReviews = true;
 
                 if (mListener != null) {
                     mListener.showErrorMessage(null);
